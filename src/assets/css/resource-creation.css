@@ -1,0 +1,69 @@
+.resourceCreationWrapper{
+    width: 800px;
+    height: auto;
+    max-height: 682px;
+    overflow-y: auto;
+}
+.headingWrapper{
+    padding: 20px 0 36px 0;
+    height: 80px;
+    position: relative;
+}
+.headingWrapper > span {
+    position: absolute;
+    top: 23px;
+    right: 39px;
+    cursor: pointer;
+}
+.headingWrapper__title{
+    text-align: center;
+    line-height: 24px;
+    font-size: 20px;
+    font-weight: 500;
+    margin: 0px;
+    color: #484f67;
+}
+.bodyWrapper{
+    padding: 0px 36px 32px 36px;
+}
+.bodyWrapper--user{
+    display: flex;
+    margin-bottom: 24px;
+}
+.bodyWrapper--user > span {
+    height: 48px;
+    width: 48px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 16px;
+}
+.bodyWrapper--user > div {
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 20px;
+}
+.postFeed{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    /* margin-bottom: 31px; */
+}
+.postFeed > button {
+    font-size: 16px;
+    line-height: 24px;
+    text-align: center;
+    font-weight: 500;
+    width: 200px;
+    height: 48px;
+    background-color: #00897b;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-family: Roboto;
+}
+.addVideoInput{
+    display: none;
+}

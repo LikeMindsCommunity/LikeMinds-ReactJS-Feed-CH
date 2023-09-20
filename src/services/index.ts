@@ -25,7 +25,7 @@ import LMFeedClient, {
   GetPostLikesRequest,
   GetCommentLikesRequest
 } from '@likeminds.community/feed-js';
-import { HelperFunctionsClass } from './helper';
+import { HelperFunctionsClass, getPdfPageCount, getVideoDuration } from './helper';
 import { FileModel, UploadMediaModel } from './models';
 
 interface LMFeedClientInterface {
@@ -47,7 +47,8 @@ export class LMClient extends HelperFunctionsClass implements LMFeedClientInterf
     try {
       const apiCallResponse = await this.client.initiateUser(
         InitiateUserRequest.builder()
-          .setUUID(userUniqueId)
+          // .setUUID(userUniqueId).
+          .setUUID('299dc20c-72e1-49cf-8018-8ae33208d0a2')
           .setIsGuest(isGuestMember)
           .setUserName(username!)
           .build()
@@ -107,6 +108,93 @@ export class LMClient extends HelperFunctionsClass implements LMFeedClientInterf
     reader.readAsArrayBuffer(file as unknown as File);
   }
 
+  async addArticlePost(title: string, body: string, media: File, uniqueUserId: any) {
+    try {
+      const uploadResponse: UploadMediaModel = await this.uploadMedia(media, uniqueUserId);
+      const attachmentResponseArray: Attachment[] = [];
+      attachmentResponseArray.push(
+        Attachment.builder()
+          .setAttachmentType(7)
+          .setAttachmentMeta(
+            AttachmentMeta.builder()
+              .setTitle(title)
+              .setBody(body)
+              .setCoverImageUrl(uploadResponse.Location)
+              .build()
+          )
+          .build()
+      );
+      const apiCallResponse: UploadMediaModel = await this.client.addPost(
+        AddPostRequest.builder().setText('').setAttachments(attachmentResponseArray).build()
+      );
+      return apiCallResponse;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async addVideoResourcePost(title: string, body: string, media: File, uniqueUserId: any) {
+    try {
+      const uploadResponse: UploadMediaModel = await this.uploadMedia(media, uniqueUserId);
+      const attachmentResponseArray: Attachment[] = [];
+      attachmentResponseArray.push(
+        Attachment.builder()
+          .setAttachmentType(2)
+          .setAttachmentMeta(
+            AttachmentMeta.builder()
+              .setformat(media?.name?.split('.').slice(-1).toString())
+              .seturl(uploadResponse.Location)
+              .setsize(media.size)
+              .setname(media.name)
+              .setduration(await getVideoDuration(media))
+              .build()
+          )
+          .build()
+      );
+      const apiCallResponse: UploadMediaModel = await this.client.addPost(
+        AddPostRequest.builder()
+          .setText(body)
+          .setAttachments(attachmentResponseArray)
+          .setHeading(title)
+          .build()
+      );
+      return apiCallResponse;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async addPDFResourcePost(title: string, body: string, media: File, uniqueUserId: any) {
+    try {
+      const uploadResponse: UploadMediaModel = await this.uploadMedia(media, uniqueUserId);
+      const attachmentResponseArray: Attachment[] = [];
+      attachmentResponseArray.push(
+        Attachment.builder()
+          .setAttachmentType(3)
+          .setAttachmentMeta(
+            AttachmentMeta.builder()
+              .seturl(uploadResponse.Location)
+              .setformat(media?.name?.split('.').slice(-1).toString())
+              .setsize(media.size)
+              .setname(media.name)
+              // .setpageCount(await getPdfPageCount(media))
+              .build()
+          )
+          .build()
+      );
+      const apiCallResponse: UploadMediaModel = await this.client.addPost(
+        AddPostRequest.builder()
+          .setText(body)
+          .setAttachments(attachmentResponseArray)
+          .setHeading(title)
+          .build()
+      );
+      return apiCallResponse;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   async addPostWithImageAttachments(text: any, mediaArray: any[], uniqueUserId: any) {
     try {
       const attachmentResponseArray: Attachment[] = [];
@@ -124,6 +212,7 @@ export class LMClient extends HelperFunctionsClass implements LMFeedClientInterf
                   .setformat(file?.name?.split('.').slice(-1).toString())
                   .setsize(file.size)
                   .setname(file.name)
+                  .setduration(10)
                   .build()
               )
               .build()

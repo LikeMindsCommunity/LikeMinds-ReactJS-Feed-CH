@@ -95,9 +95,10 @@
 }
 .lmWrapper__feed {
   background-color: transparent;
-  max-width: 576px;
+  /* max-width: 576px; */
   width: 100%;
-  margin: 0 auto;
+  flex-grow: 1;
+  /* margin: 0 auto; */
 }
 .lmWrapper__feed__creatPost {
   background-color: #fff;
@@ -566,4 +567,7 @@
 }
 .slider-wrapper.axis-horizontal{
   background-color: black;
+}
+p{
+  margin: 0;
 }

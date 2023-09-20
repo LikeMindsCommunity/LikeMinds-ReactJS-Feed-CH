@@ -1,0 +1,23 @@
+.inputFieldWrapper{
+    width: 100%;
+    padding-bottom: 24px;
+}
+.heading{
+    line-height: 24px;
+    font-size: 16px;
+    color: #333333;
+    font-weight: 500;
+}
+.input{
+    width: 100%;
+    border: none;
+    line-height: 22px;
+    font-size: 16px;
+    padding: 0;
+    padding-top: 1px;
+    border-bottom: 1px solid #D0D8E2;
+}
+.input:focus-visible{
+
+    outline: none;
+}

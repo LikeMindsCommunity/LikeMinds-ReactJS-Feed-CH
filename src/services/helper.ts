@@ -1,5 +1,8 @@
 import * as AWS from 'aws-sdk';
 import { UploadMediaModel } from './models';
+import { PostSchema } from '../components/resource-creation';
+import { lmFeedClient } from '..';
+import pdfjs from 'pdfjs-dist';
 
 interface HelperFunctionsInterface {
   detectLinks(text: string): any[];
@@ -48,4 +51,88 @@ export class HelperFunctionsClass implements HelperFunctionsInterface {
     });
     return mediaObject.promise();
   }
+}
+
+export async function addPost(resourceType: number, postObject: PostSchema, userUniqueId: string) {
+  console.log(resourceType);
+  if (!validatePostSchema(resourceType, postObject)) {
+    return;
+  }
+
+  switch (resourceType) {
+    case 0: {
+      return await lmFeedClient.addArticlePost(
+        postObject.title,
+        postObject.description!,
+        postObject.mediaFile!,
+        userUniqueId
+      );
+    }
+    case 1: {
+      return await lmFeedClient.addVideoResourcePost(
+        postObject.title,
+        postObject.description!,
+        postObject.mediaFile!,
+        userUniqueId
+      );
+    }
+    case 2: {
+      return await lmFeedClient.addPDFResourcePost(
+        postObject.title,
+        postObject.description!,
+        postObject.mediaFile!,
+        userUniqueId
+      );
+    }
+  }
+}
+function validatePostSchema(resourceType: number, postObject: PostSchema) {
+  const { title, description, mediaFile, linkResource } = postObject;
+  switch (resourceType) {
+    case 0:
+    case 1:
+    case 2: {
+      return Boolean(title) && Boolean(mediaFile) && Boolean(description);
+    }
+  }
+}
+
+export function getVideoDuration(file: File): Promise<number> {
+  return new Promise<number>((resolve, reject) => {
+    const video = document.createElement('video');
+    video.preload = 'metadata';
+
+    video.onloadedmetadata = function () {
+      URL.revokeObjectURL(video.src);
+      resolve(Math.floor(video.duration));
+    };
+
+    video.onerror = function () {
+      console.log('error');
+      reject('Error loading video');
+    };
+    video.src = URL.createObjectURL(file);
+  });
+}
+
+export async function getPdfPageCount(file: File) {
+  return new Promise<number>((resolve, reject) => {
+    const reader = new FileReader();
+    const url = `//cdn.jsdelivr.net/npm/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
+    pdfjs.GlobalWorkerOptions.workerSrc = url;
+    reader.onload = async function (event: any) {
+      try {
+        const typedArray = new Uint8Array(event.target.result);
+        const pdf = await pdfjs.getDocument({ data: typedArray }).promise;
+        alert('the page sise is :' + pdf.numPages);
+        resolve(pdf.numPages);
+      } catch (error) {
+        reject('Error reading PDF: ' + error);
+      }
+    };
+    reader.onerror = function () {
+      reject('Error loading PDF file.');
+    };
+    reader.readAsArrayBuffer(file);
+  });
 }

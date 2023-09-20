@@ -31,6 +31,7 @@ import { Route, Routes, useNavigate } from 'react-router-dom';
 import PostDetails from '../../components/post-details';
 import PostLikesList from '../../components/PostLikesList';
 import '../../assets/css/skeleton-post.css';
+import ResourceHeadbar from '../../components/resource-headbar';
 interface FeedProps {
   setCallBack: React.Dispatch<((action: string, index: number, value: any) => void) | null>;
 }
@@ -250,35 +251,45 @@ const FeedComponent: React.FC<FeedProps> = ({ setCallBack }) => {
         return null;
       default:
         return (
-          <div className="lmWrapper">
-            <div className="lmWrapper__feed">
-              {/* Create Post */}
-              <InfiniteScroll
-                dataLength={feedPostsArray.length + 2}
-                scrollThreshold={0.8}
-                hasMore={hasMoreFeed}
-                loader={(() => {
-                  return <CircularProgress />;
-                })()}
-                next={() => {
-                  let pg = feedPostsArray.length / 10;
-                  getFeeds(pg + 1);
-                }}>
-                <CreatePost setFeedArray={setFeedPostsArray} feedArray={feedPostsArray} />
+          <>
+            <div className="lmWrapper">
+              <div className="lmWrapper__feed">
                 {/* Create Post */}
+                <ResourceHeadbar />
+                <div
+                  style={{
+                    margin: '0 auto',
+                    maxWidth: '576px',
+                    width: 'auto'
+                  }}>
+                  <InfiniteScroll
+                    dataLength={feedPostsArray.length + 2}
+                    scrollThreshold={0.8}
+                    hasMore={hasMoreFeed}
+                    loader={(() => {
+                      return <CircularProgress />;
+                    })()}
+                    next={() => {
+                      let pg = feedPostsArray.length / 10;
+                      getFeeds(pg + 1);
+                    }}>
+                    <CreatePost setFeedArray={setFeedPostsArray} feedArray={feedPostsArray} />
+                    {/* Create Post */}
 
-                {/* Filter */}
-                {/* <FeedFilter /> */}
-                {/* Filter */}
+                    {/* Filter */}
+                    {/* <FeedFilter /> */}
+                    {/* Filter */}
 
-                {/* Post */}
-                {setFeedPosts()}
-                {/* <Post /> */}
-                {/* Post */}
-              </InfiniteScroll>
+                    {/* Post */}
+                    {setFeedPosts()}
+                    {/* <Post /> */}
+                    {/* Post */}
+                  </InfiniteScroll>
+                </div>
+              </div>
+              <div className="lmWrapper__allMembers">{sideBar}</div>
             </div>
-            <div className="lmWrapper__allMembers">{sideBar}</div>
-          </div>
+          </>
         );
     }
   }

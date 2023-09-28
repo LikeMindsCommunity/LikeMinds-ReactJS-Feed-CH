@@ -1,19 +1,24 @@
 interface AttachmentMeta {
   entityId: string;
-  ogTags?: Record<string, any>; // You can define a more specific type if needed
+  ogTags?: OgTag; // You can define a more specific type if needed
+  duration: number;
+  format: string;
+  name: string;
+  size: number;
+  url: string;
 }
 
-interface Attachment {
+export interface Attachment {
   attachmentMeta: AttachmentMeta;
   attachmentType: number;
 }
 
-interface MenuItem {
+export interface MenuItem {
   id: number;
   title: string;
 }
 
-interface User {
+export interface User {
   id: number;
   name: string;
   imageUrl: string;
@@ -31,7 +36,7 @@ interface User {
   questionAnswers: any; // Define a specific type if needed
 }
 
-interface Widget {
+export interface Widget {
   id: string;
   createdAt: number;
   metadata: {
@@ -45,29 +50,38 @@ interface Widget {
   updatedAt: number;
 }
 
-export interface ArticlePost {
-  post: {
-    id: string;
-    attachments: Attachment[];
-    commentsCount: number;
-    communityId: number;
-    createdAt: number;
-    heading: string;
-    isEdited: boolean;
-    isLiked: boolean;
-    isPinned: boolean;
-    isSaved: boolean;
-    likesCount: number;
-    menuItems: MenuItem[];
-    replies: any[]; // Define a specific type if needed
-    tempId: null | string;
-    text: string;
-    topics: any[]; // Define a specific type if needed
-    updatedAt: number;
-    userId: string;
-    uuid: string;
-  };
+export interface AllPost {
+  post: Post;
   topics: Record<string, any>; // Define a more specific type if needed
   users: Record<string, User>;
   widgets: Record<string, Widget>;
+}
+
+export interface OgTag {
+  description: string;
+  image: string;
+  title: string;
+  url: string;
+}
+
+export interface Post {
+  Id: string;
+  attachments: Attachment[];
+  commentsCount: number;
+  communityId: number;
+  createdAt: number;
+  heading: string;
+  isEdited: boolean;
+  isLiked: boolean;
+  isPinned: boolean;
+  isSaved: boolean;
+  likesCount: number;
+  menuItems: MenuItem[];
+  replies: any[]; // Define a specific type if needed
+  tempId: null | string;
+  text: string;
+  topics: any[]; // Define a specific type if needed
+  updatedAt: number;
+  userId: string;
+  uuid: string;
 }

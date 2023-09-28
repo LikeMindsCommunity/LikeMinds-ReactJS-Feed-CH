@@ -3,6 +3,7 @@ import { UploadMediaModel } from './models';
 import { PostSchema } from '../components/resource-creation';
 import { lmFeedClient } from '..';
 import pdfjs from 'pdfjs-dist';
+import { OgTag } from './models/resourceResponses/articleResponse';
 
 interface HelperFunctionsInterface {
   detectLinks(text: string): any[];
@@ -53,9 +54,14 @@ export class HelperFunctionsClass implements HelperFunctionsInterface {
   }
 }
 
-export async function addPost(resourceType: number, postObject: PostSchema, userUniqueId: string) {
-  console.log(resourceType);
-  if (!validatePostSchema(resourceType, postObject)) {
+export async function addPost(
+  resourceType: number,
+  postObject: PostSchema,
+  userUniqueId: string,
+  ogTag?: OgTag
+) {
+  console.log(ogTag);
+  if (!validatePostSchema(resourceType, postObject, ogTag)) {
     return;
   }
 
@@ -84,15 +90,26 @@ export async function addPost(resourceType: number, postObject: PostSchema, user
         userUniqueId
       );
     }
+    case 3: {
+      return lmFeedClient.addPostWithOGTags(
+        postObject.title,
+        postObject.description ? postObject.description : '',
+        ogTag!
+      );
+    }
   }
 }
-function validatePostSchema(resourceType: number, postObject: PostSchema) {
+function validatePostSchema(resourceType: number, postObject: PostSchema, ogTag?: OgTag) {
   const { title, description, mediaFile, linkResource } = postObject;
   switch (resourceType) {
     case 0:
     case 1:
     case 2: {
       return Boolean(title) && Boolean(mediaFile) && Boolean(description);
+    }
+    case 3: {
+      console.log(ogTag);
+      return Boolean(title) && Boolean(ogTag);
     }
   }
 }

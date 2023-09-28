@@ -3,13 +3,14 @@ import '../../../assets/css/inputfield.css';
 import { DecodeUrlModelSX } from '../../../services/models';
 import { lmFeedClient } from '../../..';
 import { validateUrl } from '../../../services/utilityFunctions';
+import { OgTag } from '../../../services/models/resourceResponses/articleResponse';
 
 interface InputFieldProps {
   width?: string;
   title: string;
   isRequired?: boolean;
   isSubtitle?: boolean;
-  update: React.Dispatch<string>;
+  update: React.Dispatch<any>;
   shouldCheckForLink?: boolean | null | undefined;
 }
 function InputField({
@@ -21,14 +22,13 @@ function InputField({
   shouldCheckForLink
 }: InputFieldProps) {
   const [text, setText] = useState('');
+  const [linkText, setLinkText] = useState('');
   const [ogTagData, setOgTagData] = useState<any>(null);
   const ref = useRef<any>(null);
   async function checkForOGTags(ogTagLinkArray: string[]) {
     try {
-      // (ogTagLinkArray);
       if (ogTagLinkArray.length) {
         const getOgTag: DecodeUrlModelSX = await lmFeedClient.decodeUrl(ogTagLinkArray[0]);
-        // ('the og tag call is :', getOgTag);
         setOgTagData(getOgTag);
       }
     } catch (error) {
@@ -37,20 +37,17 @@ function InputField({
   }
   useEffect(() => {
     const timeOut = setTimeout(() => {
-      // const ogTagLinkArray: string[] = lmFeedClient.detectLinks(text);
-      // if (!text.includes(ogTagLinkArray[0])) {
-      //   ogTagLinkArray.splice(0, 1);
-      // }
-      const ogTagLinkArray = validateUrl(text) ? text : null;
+      console.log(validateUrl(linkText));
+      const ogTagLinkArray = lmFeedClient.detectLinks(linkText);
       if (ogTagLinkArray === null) {
         return;
       }
-      checkForOGTags([ogTagLinkArray]);
+      checkForOGTags(ogTagLinkArray);
     }, 500);
     return () => {
       clearTimeout(timeOut);
     };
-  }, [text]);
+  }, [linkText]);
   const wrapperStyle = useMemo(() => {
     return {
       width: width
@@ -60,6 +57,11 @@ function InputField({
     return text.trim();
   }
   function hanldeBlur() {
+    if (shouldCheckForLink) {
+      console.log(ogTagData);
+      update(ogTagData);
+      return;
+    }
     update(formatText(text));
   }
   function getTextStyles() {
@@ -80,9 +82,9 @@ function InputField({
         return (
           <input
             className="input"
-            value={text}
+            value={linkText}
             onChange={(e) => {
-              setText(e.target.value);
+              setLinkText(e.target.value);
             }}
             onBlur={hanldeBlur}
           />

@@ -5,9 +5,11 @@ import InputField from '../side-components/InputField';
 import InputArea from '../side-components/InputArea';
 import { PostSchema } from '..';
 import { fields, takeInTakeOut } from '../../../services/utilityFunctions';
+import { OgTag } from '../../../services/models/resourceResponses/articleResponse';
 export interface ResourceCreator {
   setPostDetails: React.Dispatch<PostSchema>;
   postDetails: PostSchema;
+  setOgTagHolder?: React.Dispatch<OgTag | null>;
 }
 function ArticleResourceCreator({ setPostDetails, postDetails }: ResourceCreator) {
   function setTitle(formattedString: string) {

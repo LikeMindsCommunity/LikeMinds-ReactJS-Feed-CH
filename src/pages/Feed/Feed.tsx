@@ -1,11 +1,11 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import CreatePost from '../../components/CreatePost';
 import FeedFilter from '../../components/FeedFilter';
-import Post from '../../components/Post';
 import UserContext from '../../contexts/UserContext';
 import { lmFeedClient } from '../..';
 import DialogBox from '../../components/dialog/DialogBox';
 import CreatePostDialog from '../../components/dialog/createPost/CreatePostDialog';
+
 import { IPost, IUser, IMemberState } from '@likeminds.community/feed-js';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { CircularProgress, Dialog, Skeleton, Snackbar } from '@mui/material';
@@ -32,14 +32,25 @@ import PostDetails from '../../components/post-details';
 import PostLikesList from '../../components/PostLikesList';
 import '../../assets/css/skeleton-post.css';
 import ResourceHeadbar from '../../components/resource-headbar';
+import ArticleResourceView from '../../components/resources-view/article';
+import {
+  AllPost,
+  Post,
+  User,
+  Widget
+} from '../../services/models/resourceResponses/articleResponse';
+import LinkResourceView from '../../components/resources-view/link';
+import VideoResourceView from '../../components/resources-view/video';
+import PdfResourceView from '../../components/resources-view/pdf';
 interface FeedProps {
   setCallBack: React.Dispatch<((action: string, index: number, value: any) => void) | null>;
 }
 const FeedComponent: React.FC<FeedProps> = ({ setCallBack }) => {
   const [user, setUser] = useState(null);
   const [memberStateRights, setMemberStateRights] = useState<IMemberState | null>(null);
-  const [feedPostsArray, setFeedPostsArray] = useState<IPost[]>([]);
-  const [usersMap, setUsersMap] = useState<{ [key: string]: IUser }>({});
+  const [feedPostsArray, setFeedPostsArray] = useState<Post[]>([]);
+  const [usersMap, setUsersMap] = useState<{ [key: string]: User }>({});
+  const [widgets, setWidgets] = useState<Record<string, Widget>>({});
   const [hasMoreFeed, setHasMoreFeed] = useState<boolean>(true);
   const [openSnackBar, setOpenSnackBar] = useState<boolean>(false);
   const [snackBarMessage, setSnackBarMessage] = useState<string>('');
@@ -63,9 +74,10 @@ const FeedComponent: React.FC<FeedProps> = ({ setCallBack }) => {
     setPageCount(pageCount + 1);
     setFeedPostsArray([...feedPostsArray].concat(feeds?.posts!));
     setUsersMap({ ...usersMap, ...feeds.users });
+    setWidgets({ ...widgets, ...feeds.widgets });
   };
   function feedModerationLocalHandler(action: string, index: number, value: any) {
-    function reNewFeedArray(index: number, newFeedObject: IPost) {
+    function reNewFeedArray(index: number, newFeedObject: Post) {
       newFeedArray[index] = newFeedObject;
       setFeedPostsArray(newFeedArray);
     }
@@ -229,17 +241,65 @@ const FeedComponent: React.FC<FeedProps> = ({ setCallBack }) => {
             );
           });
       default:
-        return feedPostsArray.map((post: IPost, index: number) => {
-          return (
-            <Post
-              key={post.Id}
-              post={post}
-              user={usersMap[post.uuid]}
-              feedModerationHandler={feedModerationLocalHandler}
-              index={index}
-              rightSidebarHandler={rightSidebarhandler}
-            />
-          );
+        return feedPostsArray.map((post: Post, index: number) => {
+          const attachmentArray = post.attachments;
+          const attachment = post.attachments[0];
+          if (!attachment) {
+            // alert('An post with empty attachments encountered');
+            console.log(post);
+            return;
+          }
+          const attachmentType = attachment.attachmentType;
+          const user = usersMap[post.uuid];
+          switch (attachmentType) {
+            case 7: {
+              const widget = widgets[attachment.attachmentMeta.entityId];
+              return (
+                <ArticleResourceView
+                  user={user}
+                  post={post}
+                  widget={widget}
+                  feedModerationHandler={feedModerationLocalHandler}
+                  rightSidebarHandler={rightSidebarhandler}
+                  index={index}
+                />
+              );
+            }
+            case 4: {
+              return (
+                <LinkResourceView
+                  post={post}
+                  user={user}
+                  feedModerationHandler={feedModerationLocalHandler}
+                  rightSidebarHandler={rightSidebarhandler}
+                  index={index}
+                />
+              );
+            }
+            case 2: {
+              return (
+                <VideoResourceView
+                  user={user}
+                  post={post}
+                  feedModerationHandler={feedModerationLocalHandler}
+                  rightSidebarHandler={rightSidebarhandler}
+                  index={index}
+                />
+              );
+            }
+            case 3: {
+              return (
+                <PdfResourceView
+                  post={post}
+                  user={user}
+                  feedModerationHandler={feedModerationLocalHandler}
+                  rightSidebarHandler={rightSidebarhandler}
+                  index={index}
+                />
+              );
+            }
+          }
+          return null;
         });
     }
   }
@@ -273,7 +333,7 @@ const FeedComponent: React.FC<FeedProps> = ({ setCallBack }) => {
                       let pg = feedPostsArray.length / 10;
                       getFeeds(pg + 1);
                     }}>
-                    <CreatePost setFeedArray={setFeedPostsArray} feedArray={feedPostsArray} />
+                    {/* <CreatePost setFeedArray={setFeedPostsArray} feedArray={feedPostsArray} /> */}
                     {/* Create Post */}
 
                     {/* Filter */}
@@ -287,7 +347,7 @@ const FeedComponent: React.FC<FeedProps> = ({ setCallBack }) => {
                   </InfiniteScroll>
                 </div>
               </div>
-              <div className="lmWrapper__allMembers">{sideBar}</div>
+              {/* <div className="lmWrapper__allMembers">{sideBar}</div> */}
             </div>
           </>
         );
@@ -324,6 +384,7 @@ const FeedComponent: React.FC<FeedProps> = ({ setCallBack }) => {
       setPageCount(pageCount + 1);
       setFeedPostsArray(feeds?.posts!);
       setUsersMap(feeds.users);
+      setWidgets(feeds.widgets);
       // feeds?.posts.
     };
 
@@ -360,6 +421,7 @@ const FeedComponent: React.FC<FeedProps> = ({ setCallBack }) => {
                 feedArray={feedPostsArray}
                 users={usersMap}
                 rightSideBar={sideBar}
+                widgets={widgets}
               />
             </div>
           }
@@ -375,12 +437,12 @@ const FeedComponent: React.FC<FeedProps> = ({ setCallBack }) => {
         message={snackBarMessage}
       />
       <Dialog open={openDialogBox} onClose={() => setOpenDialogBox(false)}>
-        <EditPost
+        {/* <EditPost
           feedArray={feedPostsArray}
           setFeedArray={setFeedPostsArray}
           closeCreatePostDialog={() => setOpenDialogBox(false)}
           post={tempPost}
-        />
+        /> */}
       </Dialog>
     </UserContext.Provider>
   );

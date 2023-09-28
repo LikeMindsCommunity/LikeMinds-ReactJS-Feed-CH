@@ -39,7 +39,7 @@ interface PostFooterProps {
   commentsCount: number;
   rightSidebarHandler: (action: string, value: any) => void;
 }
-const PostFooter: React.FC<PostFooterProps> = ({
+const PostFooterAction: React.FC<PostFooterProps> = ({
   postId,
   isEdited,
   isLiked,
@@ -446,7 +446,7 @@ const PostFooter: React.FC<PostFooterProps> = ({
         return (
           <>
             <div className="commentInputBox">{showCommentBox()}</div>
-            <div
+            {/* <div
               className="commentCountDiv"
               style={{
                 display: commentList && commentList.length ? 'block' : 'none'
@@ -455,7 +455,7 @@ const PostFooter: React.FC<PostFooterProps> = ({
                 {postCommentsCount}{' '}
                 {postCommentsCount === 0 || postCommentsCount > 1 ? 'Comments' : 'Comment'}
               </span>
-            </div>
+            </div> */}
             <div className="commentsWrapper" id="wrapperComment">
               {commentList.length ? (
                 <InfiniteScroll
@@ -753,4 +753,4 @@ const PostFooter: React.FC<PostFooterProps> = ({
   );
 };
 
-export default PostFooter;
+export default PostFooterAction;

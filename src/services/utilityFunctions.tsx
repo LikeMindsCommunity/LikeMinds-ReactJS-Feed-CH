@@ -210,7 +210,7 @@ export function setTagUserImage(user: any, userContext: any) {
   }
 }
 
-export function findTag(str: string, setTaggingPageCount: any): TagInfo | undefined {
+export function findTag(str: string, setTaggingPageCount?: any): TagInfo | undefined {
   if (str.length === 0) {
     return undefined;
   }
@@ -308,4 +308,44 @@ export function validateUrl(str: string) {
   }
 
   return false;
+}
+
+export function setTagUserImageInResourceView(user: any, userContext: any) {
+  const dimension = '52px';
+  const imageLink = user?.imageUrl;
+  if (imageLink !== '') {
+    return (
+      <img
+        src={imageLink}
+        alt={userContext.user?.imageUrl}
+        style={{
+          width: dimension,
+          height: dimension,
+          borderRadius: '50%'
+        }}
+      />
+    );
+  } else {
+    return (
+      <div
+        style={{
+          minWidth: dimension,
+          width: dimension,
+          height: dimension,
+          borderRadius: '50%',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: '#5046e5',
+          fontSize: '14px',
+          fontWeight: 'bold',
+          color: '#fff',
+          letterSpacing: '1px'
+        }}>
+        {user?.name?.split(' ').map((part: string) => {
+          return part.charAt(0)?.toUpperCase();
+        })}
+      </div>
+    );
+  }
 }

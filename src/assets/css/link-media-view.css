@@ -1,0 +1,31 @@
+*{
+    font-family: Roboto;
+}
+.linkMediaWrapper{
+    padding: 16px 16px 10px 16px;
+   
+}
+.ogPreview{
+    max-height: 216px;
+    width: 544px;
+    height: auto;
+}
+.ogDetails{
+    padding: 16px;
+}
+.ogDetails--title{
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 20px;
+    color: #333333;
+}
+.ogDetails--subtitle{
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 16px;
+    color: rgba(72, 79, 103, 0.7);
+}
+.ogTagContent{
+    border-radius: 8px;
+    border: 1px solid #E6EBF5;
+}

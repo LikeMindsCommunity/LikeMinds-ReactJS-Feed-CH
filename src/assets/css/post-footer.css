@@ -52,3 +52,6 @@
 .lmOverflowMenuTitle:hover{
   background-color: rgba(230, 235, 245, 1);
 }
+.lmWrapper__feed__post__footer{
+  padding: 10px 0px 10px 0px;
+}

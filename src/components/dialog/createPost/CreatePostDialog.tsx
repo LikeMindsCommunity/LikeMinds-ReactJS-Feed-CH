@@ -349,7 +349,7 @@ const CreatePostDialog = ({
           userContext?.user?.sdkClientInfo.userUniqueId
         );
       } else if (previewOGTagData !== null) {
-        response = await lmFeedClient.addPostWithOGTags(text, previewOGTagData);
+        // response = await lmFeedClient.addPostWithOGTags(text, previewOGTagData);
       } else {
         if (textContent === '') {
           return;

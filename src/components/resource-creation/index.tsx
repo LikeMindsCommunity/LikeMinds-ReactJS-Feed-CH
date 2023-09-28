@@ -9,6 +9,7 @@ import VideoResourceCreator from './video';
 import PostDetails from '../post-details';
 import { lmFeedClient } from '../..';
 import { addPost } from '../../services/helper';
+import { OgTag } from '../../services/models/resourceResponses/articleResponse';
 interface ResourceCreationProps {
   resourceType: number;
   closeDialog: () => void;
@@ -28,7 +29,7 @@ export default function ResourceCreation({
   setPostObject
 }: ResourceCreationProps) {
   const userContext = useContext(UserContext);
-
+  const [ogTagHolder, setOgTagHolder] = useState<OgTag | null>(null);
   function setResourceHeader() {
     switch (resourceType) {
       case 0:
@@ -36,9 +37,9 @@ export default function ResourceCreation({
       case 1:
         return <>Add Video Resource</>;
       case 2:
-        return <>Add Link Resource</>;
-      case 3:
         return <>Add PDF Resource</>;
+      case 3:
+        return <>Add Link Resource</>;
     }
   }
   function setResourceCreationBlock() {
@@ -50,7 +51,13 @@ export default function ResourceCreation({
       case 2:
         return <PDFResourceCreator postDetails={postObject} setPostDetails={setPostObject} />;
       case 3:
-        return <LinkResourceCreator postDetails={postObject} setPostDetails={setPostObject} />;
+        return (
+          <LinkResourceCreator
+            setOgTagHolder={setOgTagHolder}
+            postDetails={postObject}
+            setPostDetails={setPostObject}
+          />
+        );
     }
   }
   return (
@@ -81,7 +88,18 @@ export default function ResourceCreation({
         {setResourceCreationBlock()}
         <div className="postFeed">
           <button
-            onClick={() => addPost(resourceType, postObject, userContext.user?.sdkClientInfo.uuid)}>
+            onClick={() => {
+              if (resourceType === 3) {
+                addPost(
+                  resourceType,
+                  postObject,
+                  userContext.user?.sdkClientInfo.uuid,
+                  ogTagHolder!
+                );
+                return null;
+              }
+              addPost(resourceType, postObject, userContext.user?.sdkClientInfo.uuid);
+            }}>
             Post
           </button>
         </div>

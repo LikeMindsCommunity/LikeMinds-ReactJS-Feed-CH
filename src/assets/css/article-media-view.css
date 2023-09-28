@@ -1,0 +1,15 @@
+.mediaWrapper{
+    padding: 8px 16px 10px 16px;
+ 
+}
+.imageContainer{
+    width: 544px;
+    height: 309px;
+    border-radius: 8px;
+  
+}
+.imageContainer > img{
+    width: 544px;
+    height: 309px;
+    border-radius: 8px;
+}

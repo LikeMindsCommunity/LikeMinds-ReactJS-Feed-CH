@@ -27,6 +27,7 @@ import LMFeedClient, {
 } from '@likeminds.community/feed-js';
 import { HelperFunctionsClass, getPdfPageCount, getVideoDuration } from './helper';
 import { FileModel, UploadMediaModel } from './models';
+import { OgTag } from './models/resourceResponses/articleResponse';
 
 interface LMFeedClientInterface {
   initiateUser(userUniqueId: string, isGuestMember: boolean, username?: string): Promise<any>;
@@ -37,7 +38,7 @@ export class LMClient extends HelperFunctionsClass implements LMFeedClientInterf
   public constructor() {
     super();
     this.client = LMFeedClient.Builder()
-      .setApiKey(process.env.REACT_APP_API_KEY!)
+      .setApiKey('0aec710c-21b3-4e49-99f3-7060bf6c6f5b')
       .setPlatformCode(process.env.REACT_APP_PLATFORM_CODE!)
       .setVersionCode(parseInt(process.env.REACT_APP_VERSION_CODE!))
       .build();
@@ -48,7 +49,7 @@ export class LMClient extends HelperFunctionsClass implements LMFeedClientInterf
       const apiCallResponse = await this.client.initiateUser(
         InitiateUserRequest.builder()
           // .setUUID(userUniqueId).
-          .setUUID('299dc20c-72e1-49cf-8018-8ae33208d0a2')
+          .setUUID('68b38b5d-ae72-4f7c-8956-48fd150ac068')
           .setIsGuest(isGuestMember)
           .setUserName(username!)
           .build()
@@ -72,7 +73,7 @@ export class LMClient extends HelperFunctionsClass implements LMFeedClientInterf
       console.log(error);
     }
   }
-  async addPostWithOGTags(text: string, ogTags: any) {
+  async addPostWithOGTags(title: string, body: string, ogTags: OgTag) {
     try {
       let attachmentArr: Attachment[] = [];
       attachmentArr.push(
@@ -83,7 +84,11 @@ export class LMClient extends HelperFunctionsClass implements LMFeedClientInterf
       );
 
       const apiCallResponse = await this.client.addPost(
-        AddPostRequest.builder().setText(text).setAttachments(attachmentArr).build()
+        AddPostRequest.builder()
+          .setHeading(title)
+          .setText(body)
+          .setAttachments(attachmentArr)
+          .build()
       );
       return this.parseDataLayerResponse(apiCallResponse);
     } catch (error) {
@@ -272,7 +277,7 @@ export class LMClient extends HelperFunctionsClass implements LMFeedClientInterf
       let apiCallResponse = await this.client.getFeed(
         GetFeedRequest.builder().setpage(pageNo).setpageSize(10).build()
       );
-      const data: GetFeedResponse | null = apiCallResponse.getData();
+      const data: any = apiCallResponse.getData();
       return data;
     } catch (error) {
       console.log(error);

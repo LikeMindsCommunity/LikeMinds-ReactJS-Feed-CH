@@ -1,4 +1,4 @@
-*{
+* {
   box-sizing: border-box;
 }
 
@@ -95,9 +95,12 @@
 }
 .lmWrapper__feed {
   background-color: transparent;
-  max-width: 576px;
+  /* max-width: 576px; */
   width: 100%;
-  margin: 0 auto;
+  flex-grow: 1;
+  overflow-y: auto;
+  height: 100vh;
+  /* margin: 0 auto; */
 }
 .lmWrapper__feed__creatPost {
   background-color: #fff;
@@ -324,7 +327,7 @@
 .lmWrapper__feed__post__footer__actions {
   display: flex;
   justify-content: space-between;
-  padding: 10px 1rem;
+  /* padding: 10px 1rem; */
   /* border-bottom: 1px solid #d0d8e2; */
 }
 .lmWrapper__feed__post__footer__actions__left {
@@ -365,11 +368,11 @@
   overflow-y: auto;
 }
 #allMembersScrollWrapper {
-  -ms-overflow-style: none;  /* Internet Explorer 10+ */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+  scrollbar-width: none; /* Firefox */
 }
-#allMembersScrollWrapper::-webkit-scrollbar { 
-  display: none;  /* Safari and Chrome */
+#allMembersScrollWrapper::-webkit-scrollbar {
+  display: none; /* Safari and Chrome */
 }
 .lmReport {
   background-color: #fff;
@@ -450,21 +453,22 @@
 }
 
 /* Member tagging */
-.taggingBox{
+.taggingBox {
   max-height: 200px;
   width: 260px;
   overflow-y: auto;
   overflow-x: hidden;
   position: absolute;
-  box-shadow: 0px 1px 16px 0 #0000003D;
+  box-shadow: 0px 1px 16px 0 #0000003d;
   border-radius: 8px;
-  z-index: 9
+  z-index: 9;
 }
-.taggingTile, .postTaggingTile {
+.taggingTile,
+.postTaggingTile {
   background: #fff;
   padding: 12px 15px 3px;
   display: block;
-  border: none; 
+  border: none;
   width: 260px;
   text-align: left;
   color: #333;
@@ -473,21 +477,22 @@
   text-transform: capitalize;
   cursor: pointer;
 }
- 
-.taggingTile span, .postTaggingTile span{
+
+.taggingTile span,
+.postTaggingTile span {
   text-transform: capitalize;
 }
 
 /* Overflow Menu */
 
-.lmOverflowMenu{
+.lmOverflowMenu {
   width: 196px;
   background: #fff;
   border-radius: 4px;
   box-shadow: 0px 1px 16px 0px rgba(0, 0, 0, 0.24);
 }
 
-.lmOverflowMenuTitle{
+.lmOverflowMenuTitle {
   width: 196px;
   font-size: 1rem;
   font-weight: 400;
@@ -497,19 +502,19 @@
   cursor: pointer;
 }
 
-.lmPdfViewer{
-  width: 93%;
-  max-height: 300px;
+.lmPdfViewer {
+  /* width: 93%; */
+  max-height: 323px;
   position: relative;
   border: 1px solid #e6ebf5;
-  border-radius: 8px; 
-  margin: 20px;
+  border-radius: 8px;
+  margin: 0px 16px 8px 16px;
   overflow: hidden;
   position: relative;
   /* padding: 20px; */
-} 
+}
 
-.lmPdfViewer .pdfInfo{
+.lmPdfViewer .pdfInfo {
   position: absolute;
   bottom: 0;
   width: 100%;
@@ -519,28 +524,27 @@
   text-align: left;
   display: flex;
 }
-.lmPdfViewer .pdfInfo .iconBox{
+.lmPdfViewer .pdfInfo .iconBox {
   width: 28px;
-  margin-right: 20px; 
+  margin-right: 20px;
 }
-.lmPdfViewer .pdfInfo .desc{
+.lmPdfViewer .pdfInfo .desc {
   display: flex;
   flex-direction: column;
 }
-.lmPdfViewer .pdfInfo .desc h3{
-   font-size: 1rem;
-   font-weight: 500;
-   line-height: 20px;
-   color: #484f67;
-   margin: 0 0 5px 0px
-
+.lmPdfViewer .pdfInfo .desc h3 {
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 20px;
+  color: #484f67;
+  margin: 0 0 5px 0px;
 }
 
-.lmPdfViewer .pdfInfo .desc span{
-   font-size: 1rem;
-   font-weight: 400;
-   line-height: 20px;
-   color: #0000003D; 
+.lmPdfViewer .pdfInfo .desc span {
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 20px;
+  color: #0000003d;
   margin-right: 10px;
 }
 
@@ -551,19 +555,35 @@
   word-wrap: break-word;
   overflow-x: hidden;
 }
-.commentsWrapper:last-child{
+.commentsWrapper:last-child {
   padding-bottom: 0;
 }
 
-.commentWrapper:last-child{
+.commentWrapper:last-child {
   border-bottom: none;
 }
-.postTaggingTile:hover{
-  background: #E6EBF5;
+.postTaggingTile:hover {
+  background: #e6ebf5;
 }
-.slide.selected{
+.slide.selected {
   background: black;
 }
-.slider-wrapper.axis-horizontal{
+.slider-wrapper.axis-horizontal {
   background-color: black;
+}
+p {
+  margin: 0;
+}
+
+.ResourceViewWrapper{
+  margin-top: 16px !important;
+}
+.pdfPage{
+  height: 323px;
+}
+.pdfPage > canvas {
+  height: 100% !important;
+  width: auto !important;
+  margin-left: auto;
+  margin-right: auto;
 }

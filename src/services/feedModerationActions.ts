@@ -11,3 +11,10 @@ export const UPDATE_LIKES_COUNT_DECREMENT = 'UPDATE_LIKES_COUNT_DECREMENT';
 export const REFRESH_LIKES_LIST = 'REFRESH_LIKES_LIST';
 export const UPDATE_LIKES_COUNT_INCREMENT_POST = 'UPDATE_LIKES_COUNT_INCREMENT_POST';
 export const UPDATE_LIKES_COUNT_DECREMENT_POST = 'UPDATE_LIKES_COUNT_DECREMENT_POST';
+
+export const NEW_POST = 'NEW_POST';
+export const POST_EDITED_SUCCESSFULLY = 'POST_EDITED_SUCCESSFULLY';
+
+export const LENGTH_BELOW_MINIMUM = 'The description should have atleast 200 characters';
+export const FILE_OUTSIDE_LIMITS_VIDEO = 'File must be shorter than 10 mins and within 200MB';
+export const FILE_OUTSIDE_LIMITS_PDF = 'File must be shorter than 8MB';

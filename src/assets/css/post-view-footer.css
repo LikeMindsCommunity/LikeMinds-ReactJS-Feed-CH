@@ -1,0 +1,26 @@
+.postFooterContainer {
+  padding: 8px 16px 0px 16px;
+}
+.postFooterContainer--title {
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 20px;
+  color: #333333;
+  margin-bottom: 10px;
+}
+.postFooterContainer--body {
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 20px;
+  color: #666666;
+  word-wrap: normal;
+  overflow: hidden;
+  text-align: justify;
+}
+.postFooterContainer--view {
+  padding-top: 0px;
+}
+.postFooterContainer--body > a {
+  color: #007AFF;
+  text-decoration: none;
+}

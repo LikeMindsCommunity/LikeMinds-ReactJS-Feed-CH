@@ -1,0 +1,9 @@
+.videoMediaWrapper {
+  max-width: 100%;
+}
+.videoMediaWrapper > video {
+  max-width: 100%;
+  width: auto;
+  height: auto;
+  max-height: 360px;
+}

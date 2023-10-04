@@ -1,6 +1,6 @@
 .attachmentHolder {
   margin: 0 0 20px 0;
-  display: flex; 
+  display: flex;
   width: 100%;
   height: auto;
   max-height: 194px;
@@ -15,15 +15,15 @@
   margin: auto;
   width: 100%;
 }
-.attachmentHolder__singleBlock{
-    height: 300px;
-    width: 100%;
-    text-align: center;
-    background-color: #f9f9f9;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.attachmentHolder__singleBlock {
+  height: 300px;
+  width: 100%;
+  text-align: center;
+  background-color: #f9f9f9;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .attachmentHolder__singleBlock > div {
   max-height: 100%;
@@ -31,7 +31,6 @@
   margin: 0;
 }
 .attachmentHolder__imgBlock > img {
-  
   height: 100%;
   width: auto;
 }
@@ -76,7 +75,6 @@ input[type='file'] {
   top: 1rem;
   right: 2rem;
   cursor: pointer;
-  
 }
 .initiateMediaUploadBox--headingOne {
   font-weight: 400;
@@ -109,14 +107,14 @@ input[type='file'] {
   cursor: pointer;
 }
 .documentAttachmentWrapperContainer {
-  width: 100%
+  width: 100%;
 }
 .documentAttachmentContainer {
   max-height: 220px;
   width: 100%;
   overflow-y: scroll;
 }
-.documentAttachmentContainer--addMoreContainer{
+.documentAttachmentContainer--addMoreContainer {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -155,58 +153,58 @@ input[type='file'] {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.attachedDocumentWrapper__attachmentBody--headingSub{
+.attachedDocumentWrapper__attachmentBody--headingSub {
   margin: 0px;
   font-size: 0.75rem;
   color: #484f67;
 }
 
-.ogTagPreviewContainer{ 
-height: 355px;
-width: 100%;
+.ogTagPreviewContainer {
+  height: 355px;
+  width: 100%;
 }
-.ogTagPreviewContainer--wrapper{
-border: 1px solid #e6ebf5;
-border-radius: 0.5rem;
+.ogTagPreviewContainer--wrapper {
+  border: 1px solid #e6ebf5;
+  border-radius: 0.5rem;
 }
 
-.ogTagPreviewContainer__wrapper--imageWrapper{
+.ogTagPreviewContainer__wrapper--imageWrapper {
   height: 216px;
   display: flex;
-  justify-content:center;
+  justify-content: center;
   align-items: center;
 }
 
-.ogTagPreviewContainer__wrapper--imageWrapper > img{
+.ogTagPreviewContainer__wrapper--imageWrapper > img {
   height: 100%;
   width: auto;
   margin-left: auto;
   margin-right: auto;
 }
 
-.ogTagPreviewContainer__wrapper--bodyWrapper{
+.ogTagPreviewContainer__wrapper--bodyWrapper {
   padding: 1rem;
   text-align: left;
 }
 
-.ogTagPreviewContainer__wrapper__bodyWrapper--title{
+.ogTagPreviewContainer__wrapper__bodyWrapper--title {
   margin: 0;
   font-size: 1rem;
   line-height: 1.25rem;
-  color: #484F67;
+  color: #484f67;
   font-weight: 500;
 }
 
-.ogTagPreviewContainer__wrapper__bodyWrapper--description{
+.ogTagPreviewContainer__wrapper__bodyWrapper--description {
   margin: 0;
   font-size: 0.75rem;
   line-height: 1.25rem;
-  color: #484F67;
+  color: #484f67;
 }
-.postMediaAttachment{
+.postMediaAttachment {
   /* height: 300px; */
   width: 100%;
-  height: auto
+  height: auto;
 }
 .postMediaAttachment--image {
   object-position: center;

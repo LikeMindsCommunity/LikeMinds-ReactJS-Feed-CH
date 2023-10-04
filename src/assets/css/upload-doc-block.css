@@ -1,0 +1,23 @@
+.wrapper {
+  height: 68px;
+  width: 328px;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 24px;
+  background-color: #e6ebf5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+.container {
+  padding-bottom: 0px;
+}
+.image {
+  text-align: center;
+}
+.content {
+  font-size: 14px;
+  color: #3b3b3b;
+  margin-top: 4px;
+}

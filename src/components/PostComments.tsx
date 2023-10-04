@@ -1,9 +1,9 @@
 // src/Header/Header.tsx
 
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import defaultUserImage from '../assets/images/defaultUserImage.png';
+
 import { Dialog, IconButton, Menu, MenuItem } from '@mui/material';
-import { IComment, IMenuItem, IUser } from '@likeminds.community/feed-js';
+import { IComment, IMenuItem, IUser } from 'testpackageforlikeminds';
 import { Favorite, FavoriteBorder } from '@mui/icons-material';
 import { lmFeedClient } from '..';
 import SendIcon from '@mui/icons-material/Send';
@@ -11,9 +11,9 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { Parser } from 'html-to-react';
 import './../assets/css/post-footer.css';
 import './../assets/css/comments.css';
-import overflowIcon from '../assets/images/commentOverflowMenuIconShape.png';
-import commentLikes from '../assets/images/commentLikes.png';
-import commentLikesFilled from '../assets/images/commentLikesFilled.png';
+// import overflowIcon from '../assets/images/commentOverflowMenuIconShape.png';
+// import commentLikes from '../assets/images/commentLikes.png';
+// import commentLikesFilled from '../assets/images/commentLikesFilled.png';
 // import './../assets/css/post-footer.css';
 import {
   TagInfo,
@@ -35,6 +35,7 @@ import {
   UPDATE_LIKES_COUNT_DECREMENT,
   UPDATE_LIKES_COUNT_INCREMENT
 } from '../services/feedModerationActions';
+import { extractTextFromNode } from '../services/utilityFunctions';
 dayjs.extend(relativeTime);
 interface CommentProps {
   comment: IComment;
@@ -100,23 +101,55 @@ const PostComents: React.FC<CommentProps> = ({
   function renderLikeButton() {
     if (isLiked) {
       return (
-        <img
-          src={commentLikesFilled}
-          alt="like button"
-          style={{
-            verticalAlign: 'bottom'
-          }}
-        />
+        // <img
+        //   src={
+        //     'https://drive.google.com/file/d/1lOl8qfBn5o4bnm3v6BIbyPiMg9AzVzuz/view?usp=drive_link'
+        //   }
+        //   alt="like button"
+        //   style={{
+        //     verticalAlign: 'bottom'
+        //   }}
+        // />
+        <svg
+          width="25"
+          height="24"
+          viewBox="0 0 25 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M12.8778 17.299L17.9403 12.2365C19.184 10.9865 19.3653 8.94276 18.1903 7.63651C17.8956 7.30733 17.5369 7.04169 17.1361 6.85581C16.7353 6.66994 16.3008 6.56774 15.8592 6.55546C15.4175 6.54317 14.978 6.62106 14.5675 6.78437C14.157 6.94768 13.7841 7.19297 13.4715 7.50526L12.5215 8.46151L11.7028 7.63651C10.4528 6.39276 8.40905 6.21151 7.1028 7.38651C6.77362 7.68119 6.50797 8.03989 6.3221 8.4407C6.13623 8.84151 6.03403 9.276 6.02174 9.71764C6.00946 10.1593 6.08735 10.5988 6.25066 11.0093C6.41396 11.4198 6.65926 11.7927 6.97155 12.1053L12.1653 17.299C12.2601 17.3929 12.3881 17.4456 12.5215 17.4456C12.655 17.4456 12.783 17.3929 12.8778 17.299Z"
+            fill="#FB1609"
+            stroke="#FB1609"
+            strokeWidth="1.2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
       );
     } else {
       return (
-        <img
-          src={commentLikes}
-          alt="like button"
-          style={{
-            verticalAlign: 'bottom'
-          }}
-        />
+        // <img
+        //     src={'https://drive.google.com/file/d/1JS8gAeKxBNLdeOzA06QHs7aulpLUmKS4/view?usp=drive_link'}
+        //     alt="like button"
+        //     style={{
+        //         verticalAlign: 'bottom',
+        //     }}
+        // />
+        <svg
+          width="25"
+          height="24"
+          viewBox="0 0 25 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M12.8778 17.299L17.9403 12.2365C19.184 10.9865 19.3653 8.94276 18.1903 7.63651C17.8956 7.30733 17.5369 7.04169 17.1361 6.85581C16.7353 6.66994 16.3008 6.56774 15.8592 6.55546C15.4175 6.54317 14.978 6.62106 14.5675 6.78437C14.157 6.94768 13.7841 7.19297 13.4715 7.50526L12.5215 8.46151L11.7028 7.63651C10.4528 6.39276 8.40905 6.21151 7.1028 7.38651C6.77362 7.68119 6.50797 8.03989 6.3221 8.4407C6.13623 8.84151 6.03403 9.276 6.02174 9.71764C6.00946 10.1593 6.08735 10.5988 6.25066 11.0093C6.41396 11.4198 6.65926 11.7927 6.97155 12.1053L12.1653 17.299C12.2601 17.3929 12.3881 17.4456 12.5215 17.4456C12.655 17.4456 12.783 17.3929 12.8778 17.299Z"
+            stroke="#0F1E3D"
+            strokeOpacity="0.4"
+            strokeWidth="1.2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
       );
     }
   }
@@ -283,14 +316,14 @@ const PostComents: React.FC<CommentProps> = ({
     );
   }
   function findTag(str: string): TagInfo | undefined {
-    str;
+    // str;
     if (str.length === 0) {
       return undefined;
     }
     const cursorPosition = getCaretPosition();
 
     const leftLimit = checkAtSymbol(str, cursorPosition - 1);
-    leftLimit;
+    // leftLimit;
     if (leftLimit === -1) {
       // setCloseDialog(); // Assuming this function is defined somewhere else and handled separately.
       return undefined;
@@ -305,29 +338,7 @@ const PostComents: React.FC<CommentProps> = ({
       limitRight: rightLimit
     };
   }
-  function extractTextFromNode(node: any) {
-    if (node.nodeType === Node.TEXT_NODE) {
-      return node.textContent;
-    } else if (node.nodeType === Node.ELEMENT_NODE) {
-      if (node.nodeName === 'A') {
-        let textContent: string = node.textContent;
-        textContent = textContent.substring(1);
-        const id = node.getAttribute('id');
-        return `<<${textContent}|route://user_profile/${id}>>`;
-      } else {
-        let text = '';
-        const childNodes = node.childNodes;
 
-        for (const childNode of childNodes) {
-          text += extractTextFromNode(childNode);
-        }
-
-        return text.trim();
-      }
-    } else {
-      return '';
-    }
-  }
   interface MatchPattern {
     type: number;
     displayName?: string;
@@ -379,7 +390,7 @@ const PostComents: React.FC<CommentProps> = ({
 
     return container;
   }
-  function setTagUserImage(user: any) {
+  function setTagUserImage(user: any, dimension: string) {
     const imageLink = user?.imageUrl;
     if (imageLink !== '') {
       return (
@@ -387,8 +398,8 @@ const PostComents: React.FC<CommentProps> = ({
           src={imageLink}
           alt={userContext.user?.imageUrl}
           style={{
-            width: '100%',
-            height: '100%',
+            width: dimension,
+            height: dimension,
             borderRadius: '50%'
           }}
         />
@@ -493,22 +504,22 @@ const PostComents: React.FC<CommentProps> = ({
                         if (focusNode === null) {
                           return;
                         }
-                        ('A');
+
                         let div = focusNode.parentElement;
                         let text = div!.childNodes;
                         if (focusNode === null || text.length === 0) {
                           return;
                         }
-                        ('B');
+
                         let textContentFocusNode = focusNode.textContent;
                         if (textContentFocusNode === null) {
                           return;
                         }
-                        ('C');
+
                         let tagOp = findTag(textContentFocusNode);
-                        ('D');
+
                         if (tagOp === undefined) return;
-                        ('E');
+
                         let substr = tagOp?.tagString;
                         const { limitLeft, limitRight } = tagOp;
 
@@ -536,7 +547,7 @@ const PostComents: React.FC<CommentProps> = ({
                           display: 'flex',
                           alignItems: 'center'
                         }}>
-                        {setTagUserImage(item)}
+                        {setTagUserImage(item, '40px')}
                         <div
                           style={{
                             padding: '0px 0.5rem',
@@ -644,49 +655,130 @@ const PostComents: React.FC<CommentProps> = ({
   return (
     <div
       className="commentWrapper"
-      style={{
-        borderBottom: comment.level > 0 ? 'none' : '1px solid #dde3ed'
-      }}>
+      style={
+        {
+          // borderBottom: comment.level > 0 ? 'none' : '1px solid #dde3ed'
+        }
+      }>
       <Dialog open={openDeleteConfirmationDialog} onClose={closeDeleteDialog}>
         <DeleteDialog onClose={closeDeleteDialog} deleteComment={deleteComment} type={2} />
       </Dialog>
       <div className="commentWrapper--upperLayer">
         <div className="commentWrapper__upperLayer--contentBox">
-          <div className="commentWrapper--username">
-            <span className="displayName">{user?.name}</span>
-            <span className="displayTitle"></span>
-          </div>
-          <div className="commentWrapper--commentContent">
-            <div
-              className="commentWrapper__commentContent--content"
-              // dangerouslySetInnerHTML={{
-              //   __html: convertTextToHTML(comment.text).innerHTML
-              // }}
-              style={{
-                overflowWrap: 'anywhere'
-              }}>
-              {isReadMore && comment.text.length > 300
-                ? Parser().parse(convertTextToHTML(comment.text.substring(0, 300)).innerHTML)
-                : Parser().parse(convertTextToHTML(comment.text).innerHTML)}
-              {isReadMore && comment.text.length > 300 ? (
-                <span
-                  style={{
-                    color: 'gray',
-                    fontWeight: '400',
-                    cursor: 'pointer',
-                    // textDecoration: 'underline',
-                    fontSize: '14px'
-                  }}
-                  onClick={() => setIsReadMore(false)}>
-                  ...ReadMore
-                </span>
+          <div className="commentWrapper--username">{setTagUserImage(user, '40px')}</div>
+          <div className="commentWrapper--contentContainer">
+            <div className="commentWrapper--commentContent">
+              <div className="commentWrapper__commentContent--username">{user?.name}</div>
+              <div
+                className="commentWrapper__commentContent--content"
+                // dangerouslySetInnerHTML={{
+                //   __html: convertTextToHTML(comment.text).innerHTML
+                // }}
+                style={{
+                  overflowWrap: 'anywhere'
+                }}>
+                {isReadMore && comment.text.length > 300
+                  ? Parser().parse(convertTextToHTML(comment.text.substring(0, 300)).innerHTML)
+                  : Parser().parse(convertTextToHTML(comment.text).innerHTML)}
+                {isReadMore && comment.text.length > 300 ? (
+                  <span
+                    style={{
+                      color: 'gray',
+                      fontWeight: '400',
+                      cursor: 'pointer',
+                      // textDecoration: 'underline',
+                      fontSize: '14px'
+                    }}
+                    onClick={() => setIsReadMore(false)}>
+                    ...ReadMore
+                  </span>
+                ) : null}
+                {/* {} */}
+              </div>
+            </div>
+            <div className="commentWrapper--commentActions">
+              <span
+                className="like"
+                style={{
+                  height: '24px',
+                  width: '24px',
+                  textAlign: 'center'
+                }}
+                onClick={likeComment}>
+                {renderLikeButton()}
+              </span>
+              <span
+                className="likes-count"
+                onClick={() => {
+                  if (likesCount) {
+                    rightSidebarHandler(SHOW_COMMENTS_LIKES_BAR, {
+                      postId: postId,
+                      entityType: 2,
+                      totalLikes: likesCount,
+                      commentId: comment.Id
+                    });
+                  } else {
+                    likeComment();
+                  }
+                }}
+                style={{ cursor: 'pointer' }}>
+                {likesCount ? likesCount : null} {likesCount > 1 ? 'Likes' : 'Like'}
+              </span>
+              {comment.level === 0 ? (
+                <>
+                  {' '}
+                  <span className="replies"> | </span>
+                  <span className="replies">
+                    <span
+                      style={{
+                        cursor: 'pointer'
+                      }}
+                      onClick={() => {
+                        setOpenReplyBox(!openReplyBox);
+                        setOpenCommentsSection(true);
+                      }}>
+                      {commentsCount > 0 ? <span className="dotAfter">Reply</span> : 'Reply'}
+                    </span>{' '}
+                    <span
+                      style={{
+                        cursor: 'pointer',
+                        color:
+                          openCommentsSection && commentsCount > 0
+                            ? '#5046E5'
+                            : 'rgba(72, 79, 103, 0.7)'
+                      }}
+                      className="replyCount"
+                      onClick={() => {
+                        if (commentsCount !== repliesArray.length) {
+                          getComments();
+                        }
+                        setOpenCommentsSection(!openCommentsSection);
+                        // if (commentsCount > 0) {
+
+                        // }
+                      }}>
+                      <span>
+                        {commentsCount > 0 ? commentsCount + ' ' : null}
+                        {commentsCount === 0 ? '' : commentsCount > 1 ? 'Replies' : 'Reply'}
+                      </span>
+                    </span>
+                  </span>
+                </>
               ) : null}
-              {/* {} */}
+
+              <span
+                className="replies"
+                style={{
+                  flexGrow: 1,
+                  textAlign: 'right'
+                }}>
+                {dayjs(comment.createdAt).fromNow()}
+              </span>
             </div>
           </div>
         </div>
         <div className="commentWrapper__upperLayer--menuActionArea">
-          <IconButton
+          {/* <IconButton
             onClick={openMenu}
             style={{
               height: '24px',
@@ -699,95 +791,35 @@ const PostComents: React.FC<CommentProps> = ({
               $hover: {
                 background: 'none'
               }
+            }}> */}
+          <span
+            onClick={openMenu}
+            style={{
+              height: '24px',
+              width: '24px',
+              marginLeft: '8px',
+              // marginRight: '10px',
+              cursor: 'pointer'
             }}>
-            <img
-              src={overflowIcon}
-              alt="overflow icon"
-              style={{
-                cursor: 'pointer'
-              }}
-            />
-            {/* </span> */}
-          </IconButton>
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg">
+              <path
+                fillRule="evenodd"
+                clipRule="evenodd"
+                d="M8 12C8 10.9 7.1 10 6 10C4.9 10 4 10.9 4 12C4 13.1 4.9 14 6 14C7.1 14 8 13.1 8 12ZM10 12C10 13.1 10.9 14 12 14C13.1 14 14 13.1 14 12C14 10.9 13.1 10 12 10C10.9 10 10 10.9 10 12ZM16 12C16 13.1 16.9 14 18 14C19.1 14 20 13.1 20 12C20 10.9 19.1 10 18 10C16.9 10 16 10.9 16 12Z"
+                fill="#666666"
+              />
+            </svg>
+          </span>
+
+          {/* </span> */}
+          {/* </IconButton> */}
           {renderMenu()}
         </div>
-      </div>
-      <div className="commentWrapper--commentActions">
-        <span
-          className="like"
-          style={{
-            height: '24px',
-            width: '24px',
-            textAlign: 'center'
-          }}
-          onClick={likeComment}>
-          {renderLikeButton()}
-        </span>
-        <span
-          className="likes-count"
-          onClick={() => {
-            if (likesCount) {
-              rightSidebarHandler(SHOW_COMMENTS_LIKES_BAR, {
-                postId: postId,
-                entityType: 2,
-                totalLikes: likesCount,
-                commentId: comment.Id
-              });
-            } else {
-              likeComment();
-            }
-          }}
-          style={{ cursor: 'pointer' }}>
-          {likesCount ? likesCount : null} {likesCount > 1 ? 'Likes' : 'Like'}
-        </span>
-        {comment.level === 0 ? (
-          <>
-            {' '}
-            <span className="replies"> | </span>
-            <span className="replies">
-              <span
-                style={{
-                  cursor: 'pointer'
-                }}
-                onClick={() => {
-                  setOpenReplyBox(!openReplyBox);
-                  setOpenCommentsSection(true);
-                }}>
-                {commentsCount > 0 ? <span className="dotAfter">Reply</span> : 'Reply'}
-              </span>{' '}
-              <span
-                style={{
-                  cursor: 'pointer',
-                  color:
-                    openCommentsSection && commentsCount > 0 ? '#5046E5' : 'rgba(72, 79, 103, 0.7)'
-                }}
-                className="replyCount"
-                onClick={() => {
-                  if (commentsCount !== repliesArray.length) {
-                    getComments();
-                  }
-                  setOpenCommentsSection(!openCommentsSection);
-                  // if (commentsCount > 0) {
-
-                  // }
-                }}>
-                <span>
-                  {commentsCount > 0 ? commentsCount + ' ' : null}
-                  {commentsCount === 0 ? '' : commentsCount > 1 ? 'Replies' : 'Reply'}
-                </span>
-              </span>
-            </span>
-          </>
-        ) : null}
-
-        <span
-          className="replies"
-          style={{
-            flexGrow: 1,
-            textAlign: 'right'
-          }}>
-          {dayjs(comment.createdAt).fromNow()}
-        </span>
       </div>
       {showReplyBox()}
       <div

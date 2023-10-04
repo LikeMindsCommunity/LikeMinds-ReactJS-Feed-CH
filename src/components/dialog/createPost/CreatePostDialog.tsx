@@ -6,7 +6,7 @@ import UserContext from '../../../contexts/UserContext';
 import { lmFeedClient } from '../../..';
 import AttachmentsHolder from './AttachmentsHolder';
 import { DecodeUrlModelSX } from '../../../services/models';
-import { IPost, IUser } from '@likeminds.community/feed-js';
+import { IPost, IUser } from 'testpackageforlikeminds';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
 interface CreatePostDialogProps {
@@ -349,7 +349,7 @@ const CreatePostDialog = ({
           userContext?.user?.sdkClientInfo.userUniqueId
         );
       } else if (previewOGTagData !== null) {
-        response = await lmFeedClient.addPostWithOGTags(text, previewOGTagData);
+        // response = await lmFeedClient.addPostWithOGTags(text, previewOGTagData);
       } else {
         if (textContent === '') {
           return;

@@ -1,4 +1,4 @@
-import { Attachment } from '@likeminds.community/feed-js';
+import { Attachment } from 'testpackageforlikeminds';
 import React, { useEffect, useState } from 'react';
 import './image-media.css';
 
@@ -28,7 +28,8 @@ function ImageMedia({ attachment }: ImageMediaProps) {
     <div
       style={{
         backgroundColor: 'black'
-      }}>
+      }}
+    >
       <img
         src={attachment.attachmentMeta.url}
         alt="Your Image"

@@ -1,0 +1,10 @@
+.cropperWrapper{
+    height: 500px;
+    width: 100%;
+}
+.cropButtonContainer{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 32px;
+}

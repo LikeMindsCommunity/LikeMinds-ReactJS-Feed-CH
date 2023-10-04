@@ -1,4 +1,4 @@
-interface AttachmentMeta {
+export interface AttachmentMeta {
   entityId: string;
   ogTags?: OgTag; // You can define a more specific type if needed
   duration: number;

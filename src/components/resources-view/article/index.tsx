@@ -44,7 +44,14 @@ function ArticleResourceView({
       return (
         <div className="ResourceViewWrapper">
           <ArticleMediaViewComponent imgUrl={imgUrl} />
-          <PostHeader user={user} post={post} isArticle={true} widget={widget} />
+          <PostHeader
+            index={index}
+            user={user}
+            post={post}
+            isArticle={true}
+            widget={widget}
+            feedModerationHandler={feedModerationHandler}
+          />
           <PostFooter
             title={title}
             body={body}
@@ -58,8 +65,13 @@ function ArticleResourceView({
     }
     case true: {
       return (
-        <div className="ResourceViewWrapper">
-          <PostHeader user={user} post={post} />
+        <div className="ResourceViewWrapper--details">
+          <PostHeader
+            index={index}
+            user={user}
+            post={post}
+            feedModerationHandler={feedModerationHandler}
+          />
           <ArticleMediaViewComponent imgUrl={imgUrl} />
           <PostFooter
             title={title}

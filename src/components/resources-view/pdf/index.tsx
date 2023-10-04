@@ -41,7 +41,12 @@ function PdfResourceView({
       return (
         <div className="ResourceViewWrapper">
           <PdfMediaViewComponent attachment={post.attachments[0]} />
-          <PostHeader user={user} post={post} />
+          <PostHeader
+            index={index}
+            user={user}
+            post={post}
+            feedModerationHandler={feedModerationHandler}
+          />
           <PostFooter
             title={title}
             body={body}
@@ -55,8 +60,13 @@ function PdfResourceView({
     }
     case true: {
       return (
-        <div className="ResourceViewWrapper">
-          <PostHeader user={user} post={post} />
+        <div className="ResourceViewWrapper--details">
+          <PostHeader
+            index={index}
+            user={user}
+            post={post}
+            feedModerationHandler={feedModerationHandler}
+          />
           <PdfMediaViewComponent attachment={post.attachments[0]} />
           <PostFooter
             title={title}

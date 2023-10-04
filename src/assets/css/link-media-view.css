@@ -1,31 +1,111 @@
-*{
-    font-family: Roboto;
+* {
+  font-family: Roboto;
 }
-.linkMediaWrapper{
-    padding: 16px 16px 10px 16px;
-   
+.linkMediaWrapper {
+  padding: 16px 16px 10px 16px;
+  position: relative;
 }
-.ogPreview{
-    max-height: 216px;
-    width: 544px;
-    height: auto;
+.ogPreview {
+  height: 184px;
+  width: auto;
+  margin-left: 50%;
+  margin-right: 50%;
+  transform: translateX(-50%);
+  padding: 16px 0px;
 }
-.ogDetails{
-    padding: 16px;
+.ogDetails {
+  padding: 16px;
 }
-.ogDetails--title{
-    font-weight: 500;
-    font-size: 16px;
-    line-height: 20px;
-    color: #333333;
+.ogDetails--title {
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 20px;
+  color: #333333;
 }
-.ogDetails--subtitle{
-    font-weight: 400;
-    font-size: 12px;
-    line-height: 16px;
-    color: rgba(72, 79, 103, 0.7);
+.ogDetails--subtitle {
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 16px;
+  color: rgba(72, 79, 103, 0.7);
 }
-.ogTagContent{
-    border-radius: 8px;
-    border: 1px solid #E6EBF5;
+.ogTagContent {
+  border-radius: 8px;
+  border: 1px solid #e6ebf5;
+}
+.closeIconOgTag{
+  position: absolute;
+  right: 0px;
+  top: 0px;
+}
+.creation{
+  display: flex;
+  align-items: center;
+  height: 56px;
+  /* padding-bottom: 24px; */
+  
+}
+.separator{
+  margin-top: 24px;
+  border-bottom: 1px solid #d0d8e2;
+}
+.creation--imgContainer{
+  /* width: 78px; */
+  margin-right: 6px;
+}
+.creation--imgContainer > img {
+  width: 100%;
+  height: auto;
+  max-width: 56px;
+}
+.creation--content{
+  flex-grow: 1;
+}
+.deleteIcon{
+  padding: 19px 0px 19px 19px;
+  cursor: pointer;
+}
+.creation--content--title > p {
+  line-height: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: Roboto;
+  color: #333333;
+}
+.creation--content--description > p {
+  line-height: 20px;
+  font-size: 14px;
+  font-weight: 400;
+  font-family: Roboto;
+  color:  #666666;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 600px;
+  height: 20px;
+}
+.creation--content--link > p {
+  line-height: 16px;
+  font-size: 12px;
+  font-weight: 400;
+  font-family: Roboto;
+  color:  #666666;
+}
+.ogDetails--description{
+  line-height: 20px;
+  font-size: 14px;
+  font-weight: 400;
+  font-family: Roboto;
+  color:  #666666;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 500px;
+  height: 20px;
+}
+.deleteIconEdit{
+  /* padding: 19px 0px 19px 19px; */
+  cursor: pointer;
+  position: absolute;
+  right: 20px;
+  top: 16px
 }

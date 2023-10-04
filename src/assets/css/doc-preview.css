@@ -1,40 +1,40 @@
-.previewWrapper{
-    height: 68px;
-    width: 328px;
-    border-radius: 8px;
-    padding: 16px;
-    margin-bottom: 24px;
-    background-color: #E6EBF5;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+.previewWrapper {
+  height: 68px;
+  width: 328px;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 24px;
+  background-color: #e6ebf5;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
-.docContent{
-    display: flex;
-    align-items: center;
-    /* width: 100%; */
+.docContent {
+  display: flex;
+  align-items: center;
+  /* width: 100%; */
 }
-.docContent__metaDetails{
-    margin-left: 8px;
-    width: 60%;
+.docContent__metaDetails {
+  margin-left: 8px;
+  width: 180px;
 }
-.docContent--metaDetails__name{
-    font-size: 14px;
-    font-weight: 500;
-    line-height: 20px;
-    font-family: Roboto;
-    margin-bottom: 2px;
-    white-space: nowrap;       /* Prevent text from wrapping */
-    overflow: hidden;          /* Hide overflowing content */
-    text-overflow: ellipsis; 
-    width: 100%; 
+.docContent--metaDetails__name {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  font-family: Roboto;
+  margin-bottom: 2px;
+  white-space: nowrap; /* Prevent text from wrapping */
+  overflow: hidden; /* Hide overflowing content */
+  text-overflow: ellipsis;
+  width: 100%;
 }
-.docContent--metaDetails__size{
-    font-size: 11px;
-    line-height: 14px;
-    color: #9B9B9B;
+.docContent--metaDetails__size {
+  font-size: 11px;
+  line-height: 14px;
+  color: #9b9b9b;
 }
 
-.deleteIcon{
-    cursor: pointer;
+.deleteIcon {
+  cursor: pointer;
 }

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import '../../assets/css/post-details-header.css';
-import backIcon from '../../assets/images/postDetailsBackIcon.png';
+// import backIcon from '../../assets/images/postDetailsBackIcon.png';
 
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { IPost } from '@likeminds.community/feed-js';
+import { IPost } from 'testpackageforlikeminds';
 import { lmFeedClient } from '../..';
 import AllMembers from '../AllMembers';
 import { SHOW_SNACKBAR } from '../../services/feedModerationActions';
@@ -11,6 +11,9 @@ import { CircularProgress } from '@mui/material';
 import { Post, User, Widget } from '../../services/models/resourceResponses/articleResponse';
 import ArticleResourceView from '../resources-view/article';
 import LinkResourceView from '../resources-view/link';
+import VideoResourceView from '../resources-view/video';
+import PdfResourceView from '../resources-view/pdf';
+import ResourceEditHeadbar from '../resource-headbar/editHeadbar';
 interface PostDetailsProps {
   callBack: (action: string, index: number, value: any) => void;
   feedArray: Post[];
@@ -18,15 +21,16 @@ interface PostDetailsProps {
   rightSidebarHandler: (action: string, value: any) => void;
   rightSideBar: any;
   widgets: Record<string, Widget>;
+  isEditPost?: boolean;
 }
-
 function PostDetails({
   callBack,
   feedArray,
   rightSidebarHandler,
   rightSideBar,
   widgets,
-  users
+  users,
+  isEditPost
 }: PostDetailsProps) {
   const location = useLocation();
   const params = useParams();
@@ -49,7 +53,6 @@ function PostDetails({
         newPost = resp?.data?.post;
         setPost(newPost!);
         setUser(resp?.data?.users[newPost?.uuid]);
-        console.log(newPost);
       } catch (error) {
         alert('Post Doesnt Exist');
         navigate('/');
@@ -63,7 +66,7 @@ function PostDetails({
       setPost(null);
       setUser(null);
     };
-  }, [params.postId]);
+  }, [params.postId, feedArray]);
   function renderPost() {
     const attachmentArray = post?.attachments;
     const attachment = post?.attachments[0];
@@ -73,10 +76,11 @@ function PostDetails({
       return;
     }
     const attachmentType = attachment.attachmentType;
+    const user = users[post.uuid];
     switch (attachmentType) {
       case 7: {
         const widget = widgets[attachment.attachmentMeta.entityId];
-        const user = users[post.uuid];
+
         return (
           <ArticleResourceView
             user={user}
@@ -92,6 +96,28 @@ function PostDetails({
         const user = users[post.uuid];
         return (
           <LinkResourceView
+            post={post}
+            user={user}
+            feedModerationHandler={callBack}
+            rightSidebarHandler={rightSidebarHandler}
+            index={index!}
+          />
+        );
+      }
+      case 2: {
+        return (
+          <VideoResourceView
+            user={user}
+            post={post}
+            feedModerationHandler={callBack}
+            rightSidebarHandler={rightSidebarHandler}
+            index={index!}
+          />
+        );
+      }
+      case 3: {
+        return (
+          <PdfResourceView
             post={post}
             user={user}
             feedModerationHandler={callBack}
@@ -121,7 +147,19 @@ function PostDetails({
                 //   navigate('/');
                 window.history.back();
               }}>
-              <img src={backIcon} alt="back icon" />
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg">
+                <path
+                  fillRule="evenodd"
+                  clipRule="evenodd"
+                  d="M20 11H7.8L13.4 5.4L12 4L4 12L12 20L13.4 18.6L7.8 13H20V11Z"
+                  fill="#333333"
+                />
+              </svg>
             </div>
             <div className="postDetailsHeaderWrapper--toolBarArea">
               <span>Back to Feed</span>
@@ -148,6 +186,15 @@ function PostDetails({
         </div>
         <div className="lmWrapper__allMembers">{rightSideBar}</div>
       </div>
+      {isEditPost ? (
+        <ResourceEditHeadbar
+          post={post}
+          feedModerationHandler={callBack}
+          isEditMode={isEditPost}
+          widget={widgets[post?.attachments[0].attachmentMeta.entityId!]}
+          shouldOpenEditBox={isEditPost}
+        />
+      ) : null}
       {/* </div> */}
     </div>
   );

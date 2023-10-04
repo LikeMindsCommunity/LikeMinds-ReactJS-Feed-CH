@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './../../../assets/css/post-view-footer.css';
 import PostFooterAction from '../../PostFooter';
 import { Post } from '../../../services/models/resourceResponses/articleResponse';
 import { useLocation } from 'react-router-dom';
+import { convertTextToHTML } from '../../../services/utilityFunctions';
+import { Parser } from 'html-to-react';
 interface PostFooterProps {
   title: string;
   body: string;
@@ -20,6 +22,9 @@ function PostFooter({
   rightSidebarHandler
 }: PostFooterProps) {
   const location = useLocation();
+  const [isReadMore, setIsReadMore] = useState(true);
+  const postTitleRef = useRef<HTMLDivElement | null>(null);
+
   switch (location.pathname.includes('/post')) {
     case false: {
       return (
@@ -41,9 +46,30 @@ function PostFooter({
     }
     case true: {
       return (
-        <div className="postFooterContainer">
+        <div className="postFooterContainer" ref={postTitleRef}>
           <div className="postFooterContainer--title">{title}</div>
-          <div className="postFooterContainer--body">{body}</div>
+          {body?.length ? (
+            <div
+              className="postFooterContainer--body"
+              // dangerouslySetInnerHTML={{ __html: convertTextToHTML(body).innerHTML }}
+              suppressContentEditableWarning={true}>
+              {isReadMore && body?.length > 300
+                ? Parser().parse(convertTextToHTML(body?.substring(0, 300)).innerHTML)
+                : Parser().parse(convertTextToHTML(body).innerHTML)}
+              {isReadMore && body.length > 300 ? (
+                <span
+                  style={{
+                    color: 'gray',
+                    fontWeight: '400',
+                    cursor: 'pointer',
+                    fontSize: '14px'
+                  }}
+                  onClick={() => setIsReadMore(false)}>
+                  ...ReadMore
+                </span>
+              ) : null}
+            </div>
+          ) : null}
           <PostFooterAction
             postId={post.Id}
             isEdited={post.isEdited}

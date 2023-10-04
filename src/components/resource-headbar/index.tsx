@@ -3,9 +3,24 @@ import '../../assets/css/resource-header.css';
 import { useState, useRef } from 'react';
 import * as React from 'react';
 import ResourceCreation, { PostSchema } from '../resource-creation';
-interface ResourceHeaderProps {}
+import { Post, Widget } from '../../services/models/resourceResponses/articleResponse';
+interface ResourceHeaderProps {
+  index?: number;
+  post?: Post | null;
+  feedModerationHandler?: (action: string, index: number, value: any) => void;
+  isEditMode?: boolean;
+  widget?: Widget;
+  shouldOpenEditBox?: boolean;
+}
 
-export default function ResourceHeadbar() {
+export default function ResourceHeadbar({
+  index,
+  post,
+  feedModerationHandler,
+  isEditMode,
+  widget,
+  shouldOpenEditBox
+}: ResourceHeaderProps) {
   const menuRef = useRef<HTMLButtonElement | null>(null);
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLButtonElement>(null);
   const [openContentCreationDialog, setOpenContentCreationDialog] = useState<boolean>(false);
@@ -15,6 +30,32 @@ export default function ResourceHeadbar() {
     title: '',
     linkResource: '',
     description: ''
+  });
+  React.useEffect(() => {
+    if (isEditMode) {
+      const newPostObject = {
+        mediaFile: null,
+        title: '',
+        linkResource: '',
+        description: ''
+      };
+      const resourceType = post?.attachments[0].attachmentType;
+      if (resourceType === 7) {
+        newPostObject.title = widget?.metadata.title!;
+        newPostObject.description = widget?.metadata.body!;
+      } else {
+        newPostObject.title = post?.heading!;
+        newPostObject.description = post?.text!;
+      }
+      setPostObject(newPostObject);
+      setResourceType(resourceType!);
+      setOpenContentCreationDialog(true);
+    }
+  }, []);
+  React.useEffect(() => {
+    if (shouldOpenEditBox) {
+      setOpenContentCreationDialog(true);
+    }
   });
   function openDialog(resourceType: number) {
     setOpenContentCreationDialog(true);
@@ -210,6 +251,8 @@ export default function ResourceHeadbar() {
           closeDialog={closeDialog}
           postObject={postObject}
           setPostObject={setPostObject}
+          isEditMode={isEditMode}
+          feedModerationHandler={feedModerationHandler}
         />
       </Dialog>
     </div>

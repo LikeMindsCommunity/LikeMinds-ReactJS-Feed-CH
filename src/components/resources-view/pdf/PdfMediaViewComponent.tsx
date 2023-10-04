@@ -18,7 +18,13 @@ function PdfMediaViewComponent({ attachment }: PdfMediaViewProps) {
           cursor: 'pointer'
         }}>
         <Document file={attachment?.attachmentMeta?.url}>
-          <Page pageNumber={1} height={200} renderAnnotationLayer={false} renderTextLayer={false} />
+          <Page
+            className={'pdfPage'}
+            pageNumber={1}
+            height={200}
+            renderAnnotationLayer={false}
+            renderTextLayer={false}
+          />
         </Document>
 
         <div className="pdfInfo">

@@ -3,6 +3,7 @@ import '../../../assets/css/input-area.css';
 import '../../dialog/createPost/createPostDialog.css';
 import {
   Limits,
+  convertTextToHTML,
   extractTextFromNode,
   findTag,
   returnCSSForTagging,
@@ -21,41 +22,47 @@ interface InputFieldProps {
   isRequired?: boolean;
   update: React.Dispatch<string>;
   minHeight?: string;
+  editValuePreset?: boolean;
+  editFieldValue?: string;
 }
-function InputArea({ width, placeholder, isRequired, update, minHeight }: InputFieldProps) {
+function InputArea({
+  width,
+  placeholder,
+  isRequired,
+  update,
+  minHeight,
+  editValuePreset,
+  editFieldValue
+}: InputFieldProps) {
   const userContext = useContext(UserContext);
-
   const PLACE_HOLDER_TEXT = placeholder;
   const [text, setText] = useState<string>('');
-  const [showMediaUploadBar, setShowMediaUploadBar] = useState<null | boolean>(true);
-  const [showInitiateUploadComponent, setShowInitiateUploadComponent] = useState<boolean>(false);
-  const [imageOrVideoUploadArray, setImageOrVideoUploadArray] = useState<null | File[]>(null);
-  const [documentUploadArray, setDocumentUploadArray] = useState<null | File[]>(null);
-  const [attachmentType, setAttachmentType] = useState<null | number>(0);
-  const [showOGTagPreview, setShowOGTagPreview] = useState<boolean>(false);
-  const [previewOGTagData, setPreviewOGTagData] = useState<DecodeUrlModelSX | null>(null);
-  const [hasPreviewClosedOnce, setHasPreviewClosedOnce] = useState<boolean>(false);
-  const [limits, setLimits] = useState<Limits>({
-    left: 0,
-    right: 0
-  });
   const [tagString, setTagString] = useState<string | null>(null);
   const [taggingMemberList, setTaggingMemberList] = useState<any[]>([]);
   const contentEditableDiv = useRef<HTMLDivElement | null>(null);
   const [loadMoreTaggingUsers, setLoadMoreTaggingUsers] = useState<boolean>(true);
   const [taggingPageCount, setTaggingPageCount] = useState<number>(1);
-  const [previewTagsUrl, setPreviewTagsUrl] = useState<boolean>(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const wrapperStyle = useMemo(() => {
     return {
       width: width
     };
   }, [width]);
+  useEffect(() => {
+    if (editValuePreset) {
+      if (contentEditableDiv.current) {
+        const innnerHTML = convertTextToHTML(editFieldValue!).innerHTML;
+        console.log(innnerHTML);
+        contentEditableDiv.current!.innerHTML = innnerHTML;
+      }
+    }
+  }, [contentEditableDiv, editValuePreset]);
   function formatText(text: string) {
     return text.trim();
   }
   function hanldeBlur(text: string) {
-    update(formatText(text));
+    const formattedText = formatText(text);
+    update(formattedText);
   }
   function handleTagButtonClick(e: React.MouseEvent, item: any) {
     e.preventDefault();
@@ -166,11 +173,6 @@ function InputArea({ width, placeholder, isRequired, update, minHeight }: InputF
   }, [text]);
 
   useEffect(() => {
-    if (contentEditableDiv && contentEditableDiv.current) {
-      contentEditableDiv.current.focus();
-    }
-  }, [contentEditableDiv.current]);
-  useEffect(() => {
     if (tagString === null || tagString === undefined) {
       return;
     }
@@ -208,6 +210,16 @@ function InputArea({ width, placeholder, isRequired, update, minHeight }: InputF
       document.removeEventListener('click', handleClickOutside);
     };
   }, [contentEditableDiv]);
+
+  useEffect(() => {
+    if (editValuePreset) {
+      if (contentEditableDiv.current) {
+        const innnerHTML = convertTextToHTML(editFieldValue!).innerHTML;
+        console.log(innnerHTML);
+        contentEditableDiv.current!.innerHTML = innnerHTML;
+      }
+    }
+  }, [contentEditableDiv, editValuePreset]);
 
   return (
     <div
@@ -268,6 +280,7 @@ function InputArea({ width, placeholder, isRequired, update, minHeight }: InputF
           }}
           onInput={handleInput}></div>
       </div>
+      {/* <div className="separator"></div> */}
     </div>
   );
 }

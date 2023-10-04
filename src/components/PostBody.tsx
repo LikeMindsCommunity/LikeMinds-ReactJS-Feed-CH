@@ -4,17 +4,18 @@ import { Carousel } from 'react-responsive-carousel';
 import React, { useMemo, useState } from 'react';
 import { Dialog, IconButton } from '@mui/material';
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
-import { Attachment } from '@likeminds.community/feed-js';
+import { Attachment } from 'testpackageforlikeminds';
 import ReactDOMServer from 'react-dom/server';
 import { Parser } from 'html-to-react';
 import './../assets/css/post-body.css';
-import previewImage from '../assets/images/ogTagPreview.png';
+
 import { Document, Page, pdfjs } from 'react-pdf';
 import { HolderWithCross } from './dialog/createPost/AttachmentsHolder';
 import { OgTags } from '../services/models';
 import pdfIcon from '../assets/images/poll.svg';
 import ImageMedia from './media-components/ImageMedia';
-
+const previewImage =
+  'https://drive.google.com/file/d/1luhPmNadjEBbX_yhHaf4tRuzVWcv0Tnf/view?usp=drive_link';
 const url = `//cdn.jsdelivr.net/npm/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 pdfjs.GlobalWorkerOptions.workerSrc = url;
 interface PostBodyProps {
@@ -127,7 +128,8 @@ const PostBody: React.FC<PostBodyProps> = ({ answer, attachments }) => {
             style={{
               background: 'black'
             }}
-            key={attachment.attachmentMeta.url + Math.random().toString()}>
+            key={attachment.attachmentMeta.url + Math.random().toString()}
+          >
             <video
               className="postMediaAttachment--video"
               src={attachment.attachmentMeta.url}
@@ -150,7 +152,8 @@ const PostBody: React.FC<PostBodyProps> = ({ answer, attachments }) => {
               height: '100%',
               paddingBottom: '20px',
               paddingTop: '20px'
-            }}>
+            }}
+          >
             <div
               className="lmPdfViewer"
               onClick={() => {
@@ -158,7 +161,8 @@ const PostBody: React.FC<PostBodyProps> = ({ answer, attachments }) => {
               }}
               style={{
                 cursor: 'pointer'
-              }}>
+              }}
+            >
               <Document file={attachment?.attachmentMeta?.url}>
                 <Page
                   pageNumber={pdfPageNo}
@@ -175,7 +179,8 @@ const PostBody: React.FC<PostBodyProps> = ({ answer, attachments }) => {
                     height="36"
                     viewBox="0 0 28 36"
                     fill="none"
-                    xmlns="http://www.w3.org/2000/svg">
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
                     <path
                       fillRule="evenodd"
                       clipRule="evenodd"
@@ -211,7 +216,8 @@ const PostBody: React.FC<PostBodyProps> = ({ answer, attachments }) => {
                 float: 'left',
                 background: 'white'
               }}
-              key={attachment.attachmentMeta?.ogTags?.url?.toString()}>
+              key={attachment.attachmentMeta?.ogTags?.url?.toString()}
+            >
               <PreviewForOGTag
                 setOgTagPreview={setOgTagPreview}
                 ogTagPreviewData={attachment.attachmentMeta.ogTags as any}
@@ -244,7 +250,8 @@ const PostBody: React.FC<PostBodyProps> = ({ answer, attachments }) => {
                 cursor: 'pointer',
                 fontSize: '14px'
               }}
-              onClick={() => setIsReadMore(false)}>
+              onClick={() => setIsReadMore(false)}
+            >
               ...ReadMore
             </span>
           ) : null}
@@ -256,7 +263,8 @@ const PostBody: React.FC<PostBodyProps> = ({ answer, attachments }) => {
           className="postMediaAttachment"
           showThumbs={false}
           showStatus={false}
-          showIndicators={false}>
+          showIndicators={false}
+        >
           {renderedData}
         </Carousel>
       </div>
@@ -299,7 +307,8 @@ const PreviewForOGTag = ({
                 : 'https://' + ogTagPreviewData?.url,
               '_blank'
             )
-          }>
+          }
+        >
           <div className="ogTagPreviewContainer__wrapper--imageWrapper">
             {
               <img

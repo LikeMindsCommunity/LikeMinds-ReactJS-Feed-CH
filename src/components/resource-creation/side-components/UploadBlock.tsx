@@ -1,13 +1,33 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import '../../../assets/css/upload-block.css';
 import { PostSchema } from '..';
+import { Post, Widget } from '../../../services/models/resourceResponses/articleResponse';
+import { Dialog } from '@mui/material';
+import { CropperWindow } from './Cropper';
 interface UploadBlockProps {
   postDetails: PostSchema;
   setPostDetails: React.Dispatch<PostSchema>;
+  isEditMode?: boolean;
+  post?: Post;
+  widget?: Widget;
 }
-function UploadBlock({ postDetails, setPostDetails }: UploadBlockProps) {
+function UploadBlock({ postDetails, setPostDetails, isEditMode, post, widget }: UploadBlockProps) {
   // const [file, setFile] = useState<FileList | null>(null);
-  const [imageFile, setImageFile] = useState<any>(null);
+  const [openCropper, setOpenCropper] = useState<boolean>(false);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imgUrl, setImgUrl] = useState<string>('');
+  useEffect(() => {
+    if (isEditMode) {
+      setImgUrl(widget?.metadata.coverImageUrl!);
+    }
+  }, []);
+  function returnCallback(arg: any) {
+    setImageFile(arg);
+    setOpenCropper(false);
+    const newPost = { ...postDetails };
+    newPost.mediaFile = arg;
+    setPostDetails(newPost);
+  }
   function handleImageUpload(imageFile: File | null) {
     const fileReader = new FileReader();
     fileReader.onload = function (e) {
@@ -24,8 +44,12 @@ function UploadBlock({ postDetails, setPostDetails }: UploadBlockProps) {
       };
     };
     fileReader.readAsDataURL(imageFile!);
+    setImageFile(imageFile);
   }
   function removeImage() {
+    if (isEditMode) {
+      setImgUrl('');
+    }
     const newPost = { ...postDetails };
     newPost.mediaFile = null;
     setPostDetails(newPost);
@@ -38,6 +62,7 @@ function UploadBlock({ postDetails, setPostDetails }: UploadBlockProps) {
           type="file"
           onChange={(e) => {
             handleImageUpload(e.target?.files ? e.target?.files[0] : null);
+            setOpenCropper(true);
           }}
         />
         <div className="uploadBlockWrapper">
@@ -71,38 +96,80 @@ function UploadBlock({ postDetails, setPostDetails }: UploadBlockProps) {
   );
 
   function renderComponent() {
-    switch (postDetails.mediaFile) {
-      case null:
-        return uploadBlock;
-      default:
+    switch (imgUrl.length) {
+      case 0: {
+        switch (postDetails.mediaFile) {
+          case null:
+            return uploadBlock;
+          default:
+            return (
+              <div className="imageWrapperContainer">
+                <span className="closeIcon" onClick={removeImage}>
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <rect width="24" height="24" rx="4" fill="black" fillOpacity="0.5" />
+                    <path
+                      fillRule="evenodd"
+                      clipRule="evenodd"
+                      d="M14 6.66667H16.3333V8H7V6.66667H9.33333L10 6H13.3333L14 6.66667ZM9.00006 18C8.26673 18 7.66673 17.4 7.66673 16.6667V8.66667H15.6667V16.6667C15.6667 17.4 15.0667 18 14.3334 18H9.00006Z"
+                      fill="white"
+                    />
+                  </svg>
+                </span>
+
+                <div className="imageBlockWrapper">
+                  <img
+                    src={URL.createObjectURL(postDetails.mediaFile!)}
+                    alt="none"
+                    className="imageBlock"
+                  />
+                </div>
+              </div>
+            );
+        }
+      }
+      default: {
         return (
           <div className="imageWrapperContainer">
             <span className="closeIcon" onClick={removeImage}>
               <svg
-                width="18"
-                height="19"
-                viewBox="0 0 18 19"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg">
+                <rect width="24" height="24" rx="4" fill="black" fillOpacity="0.5" />
                 <path
-                  d="M0.53273 18.0254C0.954605 18.4356 1.64601 18.4356 2.04445 18.0254L9.05226 11.0176L16.0601 18.0254C16.4702 18.4356 17.1616 18.4473 17.5718 18.0254C17.9819 17.6035 17.9937 16.9121 17.5835 16.502L10.5757 9.49416L17.5835 2.49806C17.9937 2.08791 17.9937 1.38478 17.5718 0.974625C17.1499 0.564469 16.4702 0.564469 16.0601 0.974625L9.05226 7.98244L2.04445 0.974625C1.64601 0.564469 0.942887 0.55275 0.53273 0.974625C0.122574 1.3965 0.122574 2.08791 0.53273 2.49806L7.52882 9.49416L0.53273 16.502C0.122574 16.9121 0.110855 17.6152 0.53273 18.0254Z"
+                  fillRule="evenodd"
+                  clipRule="evenodd"
+                  d="M14 6.66667H16.3333V8H7V6.66667H9.33333L10 6H13.3333L14 6.66667ZM9.00006 18C8.26673 18 7.66673 17.4 7.66673 16.6667V8.66667H15.6667V16.6667C15.6667 17.4 15.0667 18 14.3334 18H9.00006Z"
                   fill="white"
                 />
               </svg>
             </span>
 
             <div className="imageBlockWrapper">
-              <img
-                src={URL.createObjectURL(postDetails.mediaFile!)}
-                alt="none"
-                className="imageBlock"
-              />
+              <img src={imgUrl} alt="none" className="imageBlock" />
             </div>
           </div>
         );
+      }
     }
   }
-  return <div className="container">{renderComponent()}</div>;
+  return (
+    <div className="container">
+      {imageFile ? (
+        <Dialog open={openCropper} onClose={() => setOpenCropper(false)}>
+          <CropperWindow imageFile={imageFile!} returnCallback={returnCallback} />
+        </Dialog>
+      ) : null}
+      {renderComponent()}
+    </div>
+  );
 }
 
 export default UploadBlock;

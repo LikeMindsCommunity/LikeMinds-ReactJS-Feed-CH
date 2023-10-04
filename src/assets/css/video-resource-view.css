@@ -1,5 +1,9 @@
-.ResourceViewWrapper{
-    width: 576px;
-    background-color: white;
-    margin-bottom: 14px;
+.ResourceViewWrapper {
+  width: 576px;
+  background-color: white;
+  margin-bottom: 14px;
+  margin: 0px auto;
+}
+.noPaddingTop{
+  padding-top: 0px !important;
 }

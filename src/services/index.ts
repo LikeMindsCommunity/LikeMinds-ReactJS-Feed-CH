@@ -24,10 +24,11 @@ import LMFeedClient, {
   GetAllMembersRequest,
   GetPostLikesRequest,
   GetCommentLikesRequest
-} from '@likeminds.community/feed-js';
-import { HelperFunctionsClass, getPdfPageCount, getVideoDuration } from './helper';
+} from 'testpackageforlikeminds';
+import { HelperFunctionsClass, getVideoDuration } from './helper';
 import { FileModel, UploadMediaModel } from './models';
-import { OgTag } from './models/resourceResponses/articleResponse';
+import { OgTag, Widget } from './models/resourceResponses/articleResponse';
+import { PostSchema } from '../components/resource-creation';
 
 interface LMFeedClientInterface {
   initiateUser(userUniqueId: string, isGuestMember: boolean, username?: string): Promise<any>;
@@ -38,9 +39,9 @@ export class LMClient extends HelperFunctionsClass implements LMFeedClientInterf
   public constructor() {
     super();
     this.client = LMFeedClient.Builder()
-      .setApiKey('0aec710c-21b3-4e49-99f3-7060bf6c6f5b')
-      .setPlatformCode(process.env.REACT_APP_PLATFORM_CODE!)
-      .setVersionCode(parseInt(process.env.REACT_APP_VERSION_CODE!))
+      .setApiKey('5f567ca1-9d74-4a1b-be8b-a7a81fef796f')
+      .setPlatformCode('rt')
+      .setVersionCode(9999)
       .build();
   }
 
@@ -49,7 +50,7 @@ export class LMClient extends HelperFunctionsClass implements LMFeedClientInterf
       const apiCallResponse = await this.client.initiateUser(
         InitiateUserRequest.builder()
           // .setUUID(userUniqueId).
-          .setUUID('68b38b5d-ae72-4f7c-8956-48fd150ac068')
+          .setUUID('b3441519-7fbe-45b4-b9e6-3f3615d48234')
           .setIsGuest(isGuestMember)
           .setUserName(username!)
           .build()
@@ -59,6 +60,21 @@ export class LMClient extends HelperFunctionsClass implements LMFeedClientInterf
       console.log(error);
     }
   }
+  // async editPost(postId: string, text: string, attachments: Attachment[]) {
+  //   try {
+  //     const apiCallResponse = await this.client.editPost(
+  //       EditPostRequest.builder()
+  //         .setpostId(postId)
+  //         .settext(text)
+  //         .setattachments(attachments)
+  //         .build()
+  //     );
+  //     return apiCallResponse;
+  //   } catch (error) {
+  //     console.log(error);
+  //     return error;
+  //   }
+  // }
 
   async addPost(text: string, attachmentArr?: any) {
     try {
@@ -137,6 +153,59 @@ export class LMClient extends HelperFunctionsClass implements LMFeedClientInterf
       console.log(error);
     }
   }
+  async editArticlePost(
+    postId: string,
+    mediaFile: File,
+    userUniqueId: any,
+    currentPostObject: PostSchema,
+    attachments?: Widget
+  ) {
+    try {
+      const attachmentResponseArray: Attachment[] = [];
+      if (mediaFile) {
+        const uploadResponse: UploadMediaModel = await this.uploadMedia(mediaFile, userUniqueId);
+        attachmentResponseArray.push(
+          Attachment.builder()
+            .setAttachmentType(7)
+            .setAttachmentMeta(
+              AttachmentMeta.builder()
+                .setTitle(currentPostObject.title)
+                .setBody(currentPostObject.description!)
+                .setCoverImageUrl(uploadResponse.Location)
+                .build()
+            )
+            .build()
+        );
+      } else {
+        attachmentResponseArray.push(
+          Attachment.builder()
+            .setAttachmentType(7)
+            .setAttachmentMeta(
+              AttachmentMeta.builder()
+                .setTitle(currentPostObject.title)
+                .setBody(currentPostObject.description!)
+                .setCoverImageUrl(attachments?.metadata?.coverImageUrl!)
+                .build()
+            )
+            .build()
+        );
+      }
+      let apiCallResponse;
+      if (attachments)
+        apiCallResponse = await this.client.editPost(
+          EditPostRequest.builder()
+            .setpostId(postId)
+            .settext('')
+            .setHeading('')
+            .setattachments(attachmentResponseArray)
+            .build()
+        );
+      return apiCallResponse;
+    } catch (error) {
+      console.log(error);
+      return error;
+    }
+  }
 
   async addVideoResourcePost(title: string, body: string, media: File, uniqueUserId: any) {
     try {
@@ -161,6 +230,55 @@ export class LMClient extends HelperFunctionsClass implements LMFeedClientInterf
           .setText(body)
           .setAttachments(attachmentResponseArray)
           .setHeading(title)
+          .build()
+      );
+      return apiCallResponse;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async editVideoOrDocumentPost(
+    postId: string,
+    text: string,
+    heading: string,
+    attachments: Attachment[]
+  ) {
+    try {
+      const apiCallResponse = await this.client.editPost(
+        EditPostRequest.builder()
+          .setpostId(postId)
+          .settext(text)
+          .setHeading(heading)
+          .setattachments(attachments)
+          .build()
+      );
+      return apiCallResponse;
+    } catch (error) {
+      console.log(error);
+      return error;
+    }
+  }
+
+  async editPostWithOGTags(postId: string, text: string, heading: string, linkResource: string) {
+    try {
+      const ogResp = await this.decodeUrl(linkResource);
+      if (!ogResp) {
+        return;
+      }
+      let attachmentArr: Attachment[] = [];
+      attachmentArr.push(
+        Attachment.builder()
+          .setAttachmentType(4)
+          .setAttachmentMeta(AttachmentMeta.builder().setogTags(ogResp).build())
+          .build()
+      );
+      const apiCallResponse = await this.client.editPost(
+        EditPostRequest.builder()
+          .setpostId(postId)
+          .settext(text)
+          .setHeading(heading)
+          .setattachments(attachmentArr)
           .build()
       );
       return apiCallResponse;
@@ -535,42 +653,6 @@ export class LMClient extends HelperFunctionsClass implements LMFeedClientInterf
     }
   }
 
-  async editPost(postId: string, text: string, attachments: Attachment[]) {
-    try {
-      const apiCallResponse = await this.client.editPost(
-        EditPostRequest.builder()
-          .setpostId(postId)
-          .settext(text)
-          .setattachments(attachments)
-          .build()
-      );
-      return apiCallResponse;
-    } catch (error) {
-      console.log(error);
-      return error;
-    }
-  }
-  async editPostWithOGTags(postId: string, text: string, ogTags: any) {
-    try {
-      let attachmentArr: Attachment[] = [];
-      attachmentArr.push(
-        Attachment.builder()
-          .setAttachmentType(4)
-          .setAttachmentMeta(AttachmentMeta.builder().setogTags(ogTags).build())
-          .build()
-      );
-      const apiCallResponse = await this.client.editPost(
-        EditPostRequest.builder()
-          .setpostId(postId)
-          .settext(text)
-          .setattachments(attachmentArr)
-          .build()
-      );
-      return apiCallResponse;
-    } catch (error) {
-      console.log(error);
-    }
-  }
   async getAllMembers(pageNo: number) {
     try {
       const apiCallResponse = await this.client.getAllMembers(

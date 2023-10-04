@@ -3,11 +3,13 @@ import './attachmentsHolder.css';
 import phoneImageSample from '../../../assets/images/phoneImgaeSample.png';
 import { ChangeEvent } from 'react';
 import { DecodeUrlModelSX } from '../../../services/models';
-import previewImage from './../../../assets/images/ogTagPreview.png';
+// import previewImage from './../../../assets/images/ogTagPreview.png';
 import { Carousel } from 'react-responsive-carousel';
-import { Attachment } from '@likeminds.community/feed-js';
+import { Attachment } from 'testpackageforlikeminds';
 import { DeleteOutlined } from '@mui/icons-material';
 import { IconButton } from '@mui/material';
+const previewImage =
+  'https://drive.google.com/file/d/1luhPmNadjEBbX_yhHaf4tRuzVWcv0Tnf/view?usp=drive_link';
 interface AttachmentsHolderProps {
   showMediaUploadBar: boolean | null;
   setShowMediaUploadBar: React.Dispatch<React.SetStateAction<boolean | null>>;

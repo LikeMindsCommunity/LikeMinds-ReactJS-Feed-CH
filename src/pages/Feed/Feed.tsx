@@ -1,19 +1,15 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import CreatePost from '../../components/CreatePost';
-import FeedFilter from '../../components/FeedFilter';
 import UserContext from '../../contexts/UserContext';
 import { lmFeedClient } from '../..';
-import DialogBox from '../../components/dialog/DialogBox';
-import CreatePostDialog from '../../components/dialog/createPost/CreatePostDialog';
-
-import { IPost, IUser, IMemberState } from '@likeminds.community/feed-js';
+import { MemberState } from '../../services/models/memberRights';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { CircularProgress, Dialog, Skeleton, Snackbar } from '@mui/material';
 import {
   DELETE_POST,
   EDIT_POST,
   LIKE_POST,
-  REFRESH_LIKES_LIST,
+  NEW_POST,
+  POST_EDITED_SUCCESSFULLY,
   SAVE_POST,
   SHOW_COMMENTS_LIKES_BAR,
   SHOW_POST_LIKES_BAR,
@@ -23,10 +19,8 @@ import {
   UPDATE_LIKES_COUNT_INCREMENT,
   UPDATE_LIKES_COUNT_INCREMENT_POST
 } from '../../services/feedModerationActions';
-import Header from '../../components/Header';
-import EditPost from '../../components/dialog/editPost/EditPost';
+
 import AllMembers from '../../components/AllMembers';
-import LMFeedClient from '@likeminds.community/feed-js';
 import { Route, Routes, useNavigate } from 'react-router-dom';
 import PostDetails from '../../components/post-details';
 import PostLikesList from '../../components/PostLikesList';
@@ -42,12 +36,14 @@ import {
 import LinkResourceView from '../../components/resources-view/link';
 import VideoResourceView from '../../components/resources-view/video';
 import PdfResourceView from '../../components/resources-view/pdf';
+import ResourceCreation from '../../components/resource-creation';
+import ResourceEditHeadbar from '../../components/resource-headbar/editHeadbar';
 interface FeedProps {
   setCallBack: React.Dispatch<((action: string, index: number, value: any) => void) | null>;
 }
 const FeedComponent: React.FC<FeedProps> = ({ setCallBack }) => {
   const [user, setUser] = useState(null);
-  const [memberStateRights, setMemberStateRights] = useState<IMemberState | null>(null);
+  const [memberStateRights, setMemberStateRights] = useState<MemberState | null>(null);
   const [feedPostsArray, setFeedPostsArray] = useState<Post[]>([]);
   const [usersMap, setUsersMap] = useState<{ [key: string]: User }>({});
   const [widgets, setWidgets] = useState<Record<string, Widget>>({});
@@ -55,7 +51,7 @@ const FeedComponent: React.FC<FeedProps> = ({ setCallBack }) => {
   const [openSnackBar, setOpenSnackBar] = useState<boolean>(false);
   const [snackBarMessage, setSnackBarMessage] = useState<string>('');
   const [openDialogBox, setOpenDialogBox] = useState(false);
-  const [tempPost, setTempPost] = useState<IPost | null>(null);
+  const [tempPost, setTempPost] = useState<Post | null>(null);
   const [pageCount, setPageCount] = useState<number>(1);
   const [sideBar, setSideBar] = useState<any>(null);
   useEffect(() => {
@@ -111,8 +107,11 @@ const FeedComponent: React.FC<FeedProps> = ({ setCallBack }) => {
         break;
       }
       case EDIT_POST: {
-        setOpenDialogBox(true);
-        setTempPost(feedPostsArray[index]);
+        setOpenDialogBox(!openDialogBox);
+        if (index < 0) {
+          setTempPost(null);
+        }
+        // setTempPost(feedPostsArray[index]);
         break;
       }
       case SHOW_SNACKBAR: {
@@ -120,12 +119,29 @@ const FeedComponent: React.FC<FeedProps> = ({ setCallBack }) => {
         setSnackBarMessage(value);
         break;
       }
+      case NEW_POST: {
+        const newPostResponseObject = value?.data as AllPost;
+        const { post, users } = newPostResponseObject;
+        const newWidgets = newPostResponseObject.widgets;
+        console.log([post].concat(newFeedArray));
+
+        setFeedPostsArray([post].concat(newFeedArray));
+        setUsersMap({ ...usersMap, ...users });
+        setWidgets({ ...widgets, ...newWidgets });
+        break;
+      }
+      case POST_EDITED_SUCCESSFULLY: {
+        newFeedArray[index] = value.post;
+        setFeedPostsArray(newFeedArray);
+        setWidgets({ ...widgets, ...value.widget });
+        return;
+      }
       default:
         return null;
     }
   }
   function rightSidebarhandler(action: string, value: any) {
-    action;
+    // action;
     switch (action) {
       case SHOW_POST_LIKES_BAR: {
         setSideBar(
@@ -262,6 +278,7 @@ const FeedComponent: React.FC<FeedProps> = ({ setCallBack }) => {
                   feedModerationHandler={feedModerationLocalHandler}
                   rightSidebarHandler={rightSidebarhandler}
                   index={index}
+                  key={post.Id}
                 />
               );
             }
@@ -313,9 +330,15 @@ const FeedComponent: React.FC<FeedProps> = ({ setCallBack }) => {
         return (
           <>
             <div className="lmWrapper">
-              <div className="lmWrapper__feed">
+              <div className="lmWrapper__feed" id="mainFeedScroller">
                 {/* Create Post */}
-                <ResourceHeadbar />
+                <ResourceHeadbar
+                  // post={tempPost}
+                  feedModerationHandler={feedModerationLocalHandler}
+                  // isEditMode={openDialogBox}
+                  // widget={widgets[tempPost?.attachments[0].attachmentMeta.entityId!]}
+                  // shouldOpenEditBox={openDialogBox}
+                />
                 <div
                   style={{
                     margin: '0 auto',
@@ -329,6 +352,7 @@ const FeedComponent: React.FC<FeedProps> = ({ setCallBack }) => {
                     loader={(() => {
                       return <CircularProgress />;
                     })()}
+                    scrollableTarget="mainFeedScroller"
                     next={() => {
                       let pg = feedPostsArray.length / 10;
                       getFeeds(pg + 1);
@@ -347,7 +371,7 @@ const FeedComponent: React.FC<FeedProps> = ({ setCallBack }) => {
                   </InfiniteScroll>
                 </div>
               </div>
-              {/* <div className="lmWrapper__allMembers">{sideBar}</div> */}
+              <div className="lmWrapper__allMembers">{sideBar}</div>
             </div>
           </>
         );
@@ -415,6 +439,13 @@ const FeedComponent: React.FC<FeedProps> = ({ setCallBack }) => {
           path="/post/:postId"
           element={
             <div className="main">
+              {/* <ResourceEditHeadbar
+                post={tempPost}
+                feedModerationHandler={feedModerationLocalHandler}
+                isEditMode={openDialogBox}
+                widget={widgets[tempPost?.attachments[0].attachmentMeta.entityId!]}
+                shouldOpenEditBox={openDialogBox}
+              /> */}
               <PostDetails
                 rightSidebarHandler={rightSidebarhandler}
                 callBack={feedModerationLocalHandler}
@@ -422,6 +453,7 @@ const FeedComponent: React.FC<FeedProps> = ({ setCallBack }) => {
                 users={usersMap}
                 rightSideBar={sideBar}
                 widgets={widgets}
+                isEditPost={openDialogBox}
               />
             </div>
           }
@@ -436,14 +468,6 @@ const FeedComponent: React.FC<FeedProps> = ({ setCallBack }) => {
         autoHideDuration={3000}
         message={snackBarMessage}
       />
-      <Dialog open={openDialogBox} onClose={() => setOpenDialogBox(false)}>
-        {/* <EditPost
-          feedArray={feedPostsArray}
-          setFeedArray={setFeedPostsArray}
-          closeCreatePostDialog={() => setOpenDialogBox(false)}
-          post={tempPost}
-        /> */}
-      </Dialog>
     </UserContext.Provider>
   );
 };

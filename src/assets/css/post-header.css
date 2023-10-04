@@ -1,45 +1,76 @@
-*{
-    font-family: Roboto;
+* {
+  font-family: Roboto;
 }
-.resourceViewheader{
-    height: 76px;
-    padding: 16px 16px 8px 16px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+.resourceViewheader {
+  height: 76px;
+  padding: 16px 16px 8px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
-.userInformationWrapper{
-    height: 52px;
-    display: flex;
+.userInformationWrapper {
+  height: 52px;
+  display: flex;
 }
 .userInformationWrapper--imgContainer {
-    margin-right: 8px;
+  margin-right: 8px;
 }
-.userInformationWrapper--profileDetailsContainer{
-
+.userInformationWrapper--profileDetailsContainer {
 }
-.userInformationWrapper__profileDetailsContainer--mainTitle{
-    font-weight: 500;
-    font-size: 16px;
-    line-height: 20px;
-    color: #333333;
-    margin-right: 8px;
+.userInformationWrapper__profileDetailsContainer--mainTitle {
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 20px;
+  color: #333333;
+  margin-right: 8px;
+  width: 450px;
 }
-.userInformationWrapper__profileDetailsContainer__mainTitle--userTitle{
-    padding: 2px 8px 2px 8px;
-    border-radius: 2px;
-    background: #00897B;
+.userInformationWrapper__profileDetailsContainer__mainTitle--userTitle {
+  padding: 2px 8px 2px 8px;
+  border-radius: 2px;
+  background: #00897b;
+  width: 60%;
 }
-.menuItem{
-    width: 196px;
-    height: 56px;
-    padding: 18px;
-    font-weight: 400;
-    font-size: 16px;
-    color: #333333;
-    line-height: 20px;
+.menuItem {
+  width: 196px;
+  height: 56px;
+  padding: 18px;
+  font-weight: 400;
+  font-size: 16px;
+  color: #333333;
+  line-height: 20px;
+  cursor: pointer;
 }
-.resourceViewheader--view{
-    padding-top: 0px;
-    padding-bottom: 0px;
+.resourceViewheader--view {
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+.menuItemWrapper{
+  cursor: pointer;
+}
+.post-details-header{
+  border-radius: 8px;
+}
+.showEllipsis{
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.userInformationWrapper__profileDetailsContainer--duration{
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 16px;
+  color: #666666;
+}
+.userInformationWrapper__profileDetailsContainer--subTitle{
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 16px;
+  color: #666666;
+}
+.userInformationWrapper__profileDetailsContainer__mainTitle--username{
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 20px;
+  color: #333333;
 }

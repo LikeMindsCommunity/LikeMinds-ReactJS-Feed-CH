@@ -41,9 +41,14 @@ function VideoResourceView({
   switch (location.pathname.includes('/post')) {
     case false: {
       return (
-        <div className="ResourceViewWrapper">
+        <div className="ResourceViewWrapper noPaddingTop">
           <VideoMediaViewComponent videoSrc={vidUrl} />
-          <PostHeader user={user} post={post} />
+          <PostHeader
+            index={index}
+            user={user}
+            post={post}
+            feedModerationHandler={feedModerationHandler}
+          />
           <PostFooter
             title={title}
             body={body}
@@ -57,8 +62,13 @@ function VideoResourceView({
     }
     case true: {
       return (
-        <div className="ResourceViewWrapper">
-          <PostHeader user={user} post={post} />
+        <div className="ResourceViewWrapper--details">
+          <PostHeader
+            index={index}
+            user={user}
+            post={post}
+            feedModerationHandler={feedModerationHandler}
+          />
           <VideoMediaViewComponent videoSrc={vidUrl} />
           <PostFooter
             title={title}

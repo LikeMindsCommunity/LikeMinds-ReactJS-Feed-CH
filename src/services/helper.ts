@@ -2,7 +2,7 @@ import * as AWS from 'aws-sdk';
 import { UploadMediaModel } from './models';
 import { PostSchema } from '../components/resource-creation';
 import { lmFeedClient } from '..';
-import pdfjs from 'pdfjs-dist';
+
 import { OgTag } from './models/resourceResponses/articleResponse';
 
 interface HelperFunctionsInterface {
@@ -132,24 +132,24 @@ export function getVideoDuration(file: File): Promise<number> {
   });
 }
 
-export async function getPdfPageCount(file: File) {
-  return new Promise<number>((resolve, reject) => {
-    const reader = new FileReader();
-    const url = `//cdn.jsdelivr.net/npm/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
-    pdfjs.GlobalWorkerOptions.workerSrc = url;
-    reader.onload = async function (event: any) {
-      try {
-        const typedArray = new Uint8Array(event.target.result);
-        const pdf = await pdfjs.getDocument({ data: typedArray }).promise;
-        alert('the page sise is :' + pdf.numPages);
-        resolve(pdf.numPages);
-      } catch (error) {
-        reject('Error reading PDF: ' + error);
-      }
-    };
-    reader.onerror = function () {
-      reject('Error loading PDF file.');
-    };
-    reader.readAsArrayBuffer(file);
-  });
-}
+// export async function getPdfPageCount(file: File) {
+//   return new Promise<number>((resolve, reject) => {
+//     const reader = new FileReader();
+//     const url = `//cdn.jsdelivr.net/npm/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
+//     pdfjs.GlobalWorkerOptions.workerSrc = url;
+//     reader.onload = async function (event: any) {
+//       try {
+//         const typedArray = new Uint8Array(event.target.result);
+//         const pdf = await pdfjs.getDocument({ data: typedArray }).promise;
+//         alert('the page sise is :' + pdf.numPages);
+//         resolve(pdf.numPages);
+//       } catch (error) {
+//         reject('Error reading PDF: ' + error);
+//       }
+//     };
+//     reader.onerror = function () {
+//       reject('Error loading PDF file.');
+//     };
+//     reader.readAsArrayBuffer(file);
+//   });
+// }

@@ -41,7 +41,12 @@ function LinkResourceView({
       return (
         <div className="ResourceViewWrapper">
           <LinkMediaViewComponent ogTag={ogTag} />
-          <PostHeader user={user} post={post} />
+          <PostHeader
+            index={index}
+            user={user}
+            post={post}
+            feedModerationHandler={feedModerationHandler}
+          />
           <PostFooter
             title={title}
             body={body}
@@ -55,8 +60,13 @@ function LinkResourceView({
     }
     case true: {
       return (
-        <div className="ResourceViewWrapper">
-          <PostHeader user={user} post={post} />
+        <div className="ResourceViewWrapper--details">
+          <PostHeader
+            index={index}
+            user={user}
+            post={post}
+            feedModerationHandler={feedModerationHandler}
+          />
           <LinkMediaViewComponent ogTag={ogTag} />
           <PostFooter
             title={title}

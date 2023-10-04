@@ -91,7 +91,7 @@
 .create-post-feed-dialog-wrapper_container_post-wrapper_post-attachment-dialog--add-post-text {
   font-weight: 500;
   font-size: 14px;
-  line-height: 1rem; 
+  line-height: 1rem;
   color: #484f67;
 }
 
@@ -113,7 +113,7 @@
   cursor: pointer;
   font-weight: 500;
 }
- 
-.taggingTile:hover{
-  background: #E6EBF5;
+
+.taggingTile:hover {
+  background: #e6ebf5;
 }

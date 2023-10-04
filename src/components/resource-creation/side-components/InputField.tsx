@@ -4,6 +4,7 @@ import { DecodeUrlModelSX } from '../../../services/models';
 import { lmFeedClient } from '../../..';
 import { validateUrl } from '../../../services/utilityFunctions';
 import { OgTag } from '../../../services/models/resourceResponses/articleResponse';
+import LinkMediaViewComponent from '../../resources-view/link/LinkMediaViewComponent';
 
 interface InputFieldProps {
   width?: string;
@@ -12,6 +13,8 @@ interface InputFieldProps {
   isSubtitle?: boolean;
   update: React.Dispatch<any>;
   shouldCheckForLink?: boolean | null | undefined;
+  editValuePreset?: boolean;
+  editFieldValue?: string;
 }
 function InputField({
   width,
@@ -19,7 +22,9 @@ function InputField({
   isRequired,
   update,
   isSubtitle,
-  shouldCheckForLink
+  shouldCheckForLink,
+  editValuePreset,
+  editFieldValue
 }: InputFieldProps) {
   const [text, setText] = useState('');
   const [linkText, setLinkText] = useState('');
@@ -29,12 +34,25 @@ function InputField({
     try {
       if (ogTagLinkArray.length) {
         const getOgTag: DecodeUrlModelSX = await lmFeedClient.decodeUrl(ogTagLinkArray[0]);
-        setOgTagData(getOgTag);
+
+        if (getOgTag) {
+          setOgTagData(getOgTag);
+          update(getOgTag);
+        }
       }
     } catch (error) {
       // (error);
     }
   }
+  useEffect(() => {
+    if (shouldCheckForLink) {
+      if (editValuePreset) {
+        setLinkText(editFieldValue!);
+      }
+    } else {
+      setText(editFieldValue!);
+    }
+  }, []);
   useEffect(() => {
     const timeOut = setTimeout(() => {
       console.log(validateUrl(linkText));
@@ -57,12 +75,17 @@ function InputField({
     return text.trim();
   }
   function hanldeBlur() {
+    console.log(ogTagData);
     if (shouldCheckForLink) {
       console.log(ogTagData);
       update(ogTagData);
       return;
     }
     update(formatText(text));
+  }
+  function deleteCallback() {
+    setLinkText('');
+    setOgTagData(null);
   }
   function getTextStyles() {
     const styles: React.CSSProperties = {};
@@ -79,34 +102,57 @@ function InputField({
   function renderInputField() {
     switch (shouldCheckForLink) {
       case true: {
-        return (
-          <input
-            className="input"
-            value={linkText}
-            onChange={(e) => {
-              setLinkText(e.target.value);
-            }}
-            onBlur={hanldeBlur}
-          />
-        );
+        switch (ogTagData) {
+          case null: {
+            return (
+              <>
+                <input
+                  className="input link-text-input"
+                  value={linkText}
+                  onChange={(e) => {
+                    setLinkText(e.target.value);
+                  }}
+                  onBlur={hanldeBlur}
+                  placeholder="Share the link resource *"
+                />
+                <div className="separator"></div>
+              </>
+            );
+          }
+          default: {
+            return (
+              <LinkMediaViewComponent
+                ogTag={ogTagData}
+                isEditMode={true}
+                isCreationMode={true}
+                deleteCallback={deleteCallback}
+              />
+            );
+          }
+        }
       }
       default: {
         return (
-          <input
-            className="input"
-            value={text}
-            onChange={(e) => {
-              setText(e.target.value);
-            }}
-            onBlur={hanldeBlur}
-          />
+          <>
+            <input
+              className="input text-input"
+              value={text}
+              onChange={(e) => {
+                setText(e.target.value);
+              }}
+              placeholder={title}
+              onBlur={hanldeBlur}
+            />
+            <div className="separator"></div>
+            {/* <span></span> */}
+          </>
         );
       }
     }
   }
   return (
     <div style={wrapperStyle} className="inputFieldWrapper">
-      <p className="heading" style={getTextStyles()}>
+      {/* <p className="heading" style={getTextStyles()}>
         {title}
         {isRequired ? (
           <span
@@ -117,7 +163,7 @@ function InputField({
             *
           </span>
         ) : null}
-      </p>
+      </p> */}
       {renderInputField()}
     </div>
   );

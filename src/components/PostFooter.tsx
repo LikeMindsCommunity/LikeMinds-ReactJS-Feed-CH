@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import PostComents from './PostComments';
 import { lmFeedClient } from '..';
-import { Dialog, IconButton } from '@mui/material';
+import { Dialog } from '@mui/material';
 import {
   LIKE_POST,
   SAVE_POST,
@@ -10,10 +10,7 @@ import {
   UPDATE_LIKES_COUNT_DECREMENT_POST,
   UPDATE_LIKES_COUNT_INCREMENT_POST
 } from '../services/feedModerationActions';
-import { IComment, IMemberRight, IPost, IUser } from '@likeminds.community/feed-js';
-import SendIcon from '@mui/icons-material/Send';
-import nonSavedPost from '../assets/images/nonSavedPost.png';
-import savedPost from '../assets/images/savedPost.png';
+import { IComment, IMemberRight, IUser } from 'testpackageforlikeminds';
 import {
   TagInfo,
   checkAtSymbol,
@@ -26,7 +23,7 @@ import './../assets/css/post-footer.css';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import UserContext from '../contexts/UserContext';
 import SeePostLikes from './SeePostLikes';
-import { useLocation, useNavigate, useNavigation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 interface PostFooterProps {
   postId: string;
   isEdited: boolean;
@@ -293,11 +290,8 @@ const PostFooterAction: React.FC<PostFooterProps> = ({
       isCommentingAllowed = userContext.memberStateRights?.memberRights.some(
         (item: IMemberRight) => item.id === 10 && item.isSelected
       );
-    } else {
-      const rights: any = userContext?.memberStateRights;
-      isCommentingAllowed = rights.managerRights.some(
-        (item: any) => item.id === 7 && item.isSelected
-      );
+    } else if (memberState == 1) {
+      isCommentingAllowed = true;
     }
     if (isCommentingAllowed) {
       return (
@@ -650,7 +644,6 @@ const PostFooterAction: React.FC<PostFooterProps> = ({
               onClick={() => {
                 if (postLikesCount) {
                   if (!location.pathname.includes('/post')) {
-                    location.pathname;
                     navigation(`/post/${postId}`, {
                       state: {
                         index: index
@@ -729,20 +722,6 @@ const PostFooterAction: React.FC<PostFooterProps> = ({
                 ? 'Comments'
                 : 'Comment'}
             </span>
-          </div>
-        </div>
-        <div className="lmWrapper__feed__post__footer__actions__right">
-          <div className="lm-cursor-pointer">
-            {/* <IconButton
-              title="Save"
-              style={{
-                margin: '0',
-                padding: '0'
-              }} */}
-
-            {/* > */}
-            {setSavePostButton()}
-            {/* </IconButton> */}
           </div>
         </div>
       </div>

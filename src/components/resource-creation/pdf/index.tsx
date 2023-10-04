@@ -7,7 +7,12 @@ import { PostSchema } from '..';
 import { ResourceCreator } from '../article';
 import { fields, takeInTakeOut } from '../../../services/utilityFunctions';
 
-function PDFResourceCreator({ setPostDetails, postDetails }: ResourceCreator) {
+function PDFResourceCreator({
+  setPostDetails,
+  postDetails,
+  isEditMode,
+  attachmentBlock
+}: ResourceCreator) {
   const [str, setStr] = useState('');
   const [file, setFile] = useState<any>(null);
   function setTitle(formattedString: string) {
@@ -22,25 +27,49 @@ function PDFResourceCreator({ setPostDetails, postDetails }: ResourceCreator) {
     setPostDetails(newPost);
   }
   function setPreviewComponents() {
-    switch (postDetails.mediaFile) {
-      case null:
-        return <UploadDocBlock resourceType={2} setMediaFile={setMedia} />;
-      default:
+    switch (isEditMode) {
+      case true: {
         return (
           <DocPreview
             file={postDetails.mediaFile ? postDetails.mediaFile : null}
             setMediaFile={setMedia}
+            isEditMode={isEditMode}
+            attachmentBlock={attachmentBlock as any}
           />
         );
+      }
+      default: {
+        switch (postDetails.mediaFile) {
+          case null:
+            return <UploadDocBlock resourceType={2} setMediaFile={setMedia} />;
+          default:
+            return (
+              <DocPreview
+                file={postDetails.mediaFile ? postDetails.mediaFile : null}
+                setMediaFile={setMedia}
+                isEditMode={isEditMode}
+                attachmentBlock={attachmentBlock as any}
+              />
+            );
+        }
+      }
     }
   }
   return (
     <div>
-      <InputField isRequired={true} update={setTitle} title="Add Title" />
+      <InputField
+        isRequired={true}
+        update={setTitle}
+        title="Add Title"
+        editValuePreset={isEditMode}
+        editFieldValue={postDetails.title}
+      />
       <InputArea
+        editValuePreset={isEditMode}
         update={setDescription}
         placeholder="Write something (optional)"
         minHeight="102px"
+        editFieldValue={postDetails.description}
       />
       {setPreviewComponents()}
     </div>

@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import '../../../assets/css/post-header.css';
 import { setTagUserImageInResourceView } from '../../../services/utilityFunctions';
 import UserContext from '../../../contexts/UserContext';
@@ -12,29 +12,86 @@ import {
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { Menu } from '@mui/material';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate, useNavigation } from 'react-router-dom';
+import { lmFeedClient } from '../../..';
+import { DELETE_POST, EDIT_POST } from '../../../services/feedModerationActions';
+import { BASE } from '../../../services/routeDefinitions';
 dayjs.extend(relativeTime);
 interface PostHeaderProps {
   user: User;
   post: Post;
   isArticle?: boolean;
   widget?: Widget;
+  feedModerationHandler: (action: string, index: number, value: any) => void;
+  index: number;
 }
-function PostHeader({ user, post, isArticle, widget }: PostHeaderProps) {
+function PostHeader({
+  user,
+  post,
+  isArticle,
+  widget,
+  feedModerationHandler,
+  index
+}: PostHeaderProps) {
   const userContext = useContext(UserContext);
   const [anchorRef, setAnchorRef] = useState<null | HTMLDivElement>(null);
   const location = useLocation();
+  const navigation = useNavigate();
+  const postTitleRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    if (postTitleRef && postTitleRef.current) {
+      if (!location.pathname.includes('/post')) {
+        postTitleRef.current.classList.toggle('showEllipsis', true);
+      } else {
+        postTitleRef.current.classList.toggle('showEllipsis', false);
+      }
+    }
+  });
+  function getSubTitle() {
+    if (!user) {
+      return;
+    }
+    const questionArr: any[] = user?.questionAnswers
+      ?.filter((questionObject: any) => questionObject?.question?.tag === 'basic')
+      ?.filter((questionObject: any) => [0, 1].includes(questionObject?.question?.state));
+    return `${questionArr?.filter((questionObject: any) =>
+      [1].includes(questionObject?.question?.state)
+    )[0]?.questionAnswer?.answer} @ ${questionArr?.filter((questionObject: any) =>
+      [0].includes(questionObject?.question?.state)
+    )[0]?.questionAnswer?.answer}`;
+  }
   function handleMenu(e: React.MouseEvent<HTMLDivElement>) {
     anchorRef ? setAnchorRef(null) : setAnchorRef(e.currentTarget);
   }
-  function handleMenuItemClick(menuId: string) {}
+  function handleMenuItemClick(menuId: string) {
+    switch (menuId) {
+      case '1': {
+        lmFeedClient.deletePost(post.Id);
+        feedModerationHandler(DELETE_POST, index, null);
+        navigation(BASE);
+        return;
+      }
+      case '5': {
+        console.log(index);
+        feedModerationHandler(EDIT_POST, index, null);
+      }
+    }
+  }
   function renderPostMenuItems() {
     return anchorRef ? (
       <Menu
         anchorEl={anchorRef}
         open={Boolean(anchorRef)}
         onClose={handleMenu}
-        onClick={handleMenu}>
+        onClick={handleMenu}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'left'
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right'
+        }}>
         {post.menuItems.map((menuItem: MenuItem) => {
           return (
             <div
@@ -63,7 +120,7 @@ function PostHeader({ user, post, isArticle, widget }: PostHeaderProps) {
     );
   }
   const postDetailHeader = (
-    <div className="resourceViewheader">
+    <div className="resourceViewheader post-details-header">
       <div className="userInformationWrapper">
         <div className="userInformationWrapper--imgContainer">
           {setTagUserImageInResourceView(user, userContext)}
@@ -74,13 +131,27 @@ function PostHeader({ user, post, isArticle, widget }: PostHeaderProps) {
               {user?.name}
             </span>
             {user?.customTitle?.length ? (
-              <span className="userInformationWrapper__profileDetailsContainer__mainTitle--userTitle">
+              <span
+                style={{
+                  padding: '4px 8px',
+                  borderRadius: '2px',
+                  marginLeft: '10px',
+                  color: 'white',
+                  fontWeight: 500,
+                  fontSize: '11px',
+                  lineHeight: '16px',
+                  fontFamily: 'Roboto',
+                  height: '20px'
+                }}
+                className="userInformationWrapper__profileDetailsContainer__mainTitle--userTitle">
                 {user?.customTitle}
               </span>
             ) : null}
           </div>
           <div className="userInformationWrapper__profileDetailsContainer--subTitle">
-            {user?.questionAnswers}
+            {/* {user?.questionAnswers} */}
+            {/* Event Moderation @ Snapdeal */}
+            {getSubTitle()}
           </div>
           <div className="userInformationWrapper__profileDetailsContainer--duration">
             {dayjs(post.createdAt).fromNow()}
@@ -99,7 +170,9 @@ function PostHeader({ user, post, isArticle, widget }: PostHeaderProps) {
           {setTagUserImageInResourceView(user, userContext)}
         </div>
         <div className="userInformationWrapper--profileDetailsContainer">
-          <div className="userInformationWrapper__profileDetailsContainer--mainTitle">
+          <div
+            className="userInformationWrapper__profileDetailsContainer--mainTitle"
+            ref={postTitleRef}>
             <span className="userInformationWrapper__profileDetailsContainer__mainTitle--username">
               {isArticle ? widget?.metadata.title : post.heading}
             </span>
@@ -118,8 +191,13 @@ function PostHeader({ user, post, isArticle, widget }: PostHeaderProps) {
                 color: '#666666'
               }}>
               {user?.name}
-              {'  '}
+
               <svg
+                style={{
+                  marginBottom: '2px',
+                  marginLeft: '8px',
+                  marginRight: '6px'
+                }}
                 width="4"
                 height="4"
                 viewBox="0 0 4 4"
@@ -127,8 +205,16 @@ function PostHeader({ user, post, isArticle, widget }: PostHeaderProps) {
                 xmlns="http://www.w3.org/2000/svg">
                 <circle cx="2" cy="2" r="2" fill="#666666" />
               </svg>
-              {'  '}
-              {dayjs(post.createdAt).fromNow()}
+
+              <span
+                style={{
+                  lineHeight: '20px',
+                  fontSize: '12px',
+                  fontWeight: '400',
+                  color: '#666666'
+                }}>
+                {dayjs(post.createdAt).fromNow()}
+              </span>
             </span>
           </div>
           {/* <div className="userInformationWrapper__profileDetailsContainer--duration">

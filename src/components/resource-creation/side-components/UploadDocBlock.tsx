@@ -1,5 +1,12 @@
 import React from 'react';
 import '../../../assets/css/upload-doc-block.css';
+import { lmFeedClient } from '../../..';
+import { getVideoDuration } from '../../../services/helper';
+import { duration } from '@mui/material';
+import {
+  FILE_OUTSIDE_LIMITS_PDF,
+  FILE_OUTSIDE_LIMITS_VIDEO
+} from '../../../services/feedModerationActions';
 interface UploadDocBlockInterface {
   resourceType: number;
   setMediaFile: React.Dispatch<any>;
@@ -54,8 +61,23 @@ function UploadDocBlock({ resourceType, setMediaFile }: UploadDocBlockInterface)
         <input
           type="file"
           onChange={(e) => {
-            if (e.target.files) {
-              setMediaFile(e?.target?.files[0]);
+            const file = e.target.files![0];
+            if (resourceType === 1) {
+              if (e.target.files) {
+                getVideoDuration(file).then((duration) => {
+                  if (duration <= 600 && Math.round(file.size / 8192) <= 200) {
+                    setMediaFile(file);
+                  } else {
+                    alert(FILE_OUTSIDE_LIMITS_VIDEO);
+                  }
+                });
+              }
+            } else if (resourceType === 2) {
+              if (Math.round(file.size / 8192) <= 8) {
+                setMediaFile(file);
+              } else {
+                alert(FILE_OUTSIDE_LIMITS_PDF);
+              }
             }
           }}
         />

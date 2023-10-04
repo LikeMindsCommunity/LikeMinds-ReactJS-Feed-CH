@@ -9,12 +9,30 @@ import VideoResourceCreator from './video';
 import PostDetails from '../post-details';
 import { lmFeedClient } from '../..';
 import { addPost } from '../../services/helper';
-import { OgTag } from '../../services/models/resourceResponses/articleResponse';
+import {
+  Attachment,
+  OgTag,
+  Post,
+  Widget
+} from '../../services/models/resourceResponses/articleResponse';
+import {
+  LENGTH_BELOW_MINIMUM,
+  NEW_POST,
+  POST_EDITED_SUCCESSFULLY,
+  SHOW_SNACKBAR
+} from '../../services/feedModerationActions';
+import { AttachmentMeta } from 'testpackageforlikeminds';
+import { Widgets } from '@mui/icons-material';
 interface ResourceCreationProps {
   resourceType: number;
   closeDialog: () => void;
   postObject: PostSchema;
   setPostObject: React.Dispatch<PostSchema>;
+  isEditMode?: boolean;
+  attachmentBlock?: Attachment | Widget;
+  feedModerationHandler?: (action: string, index: number, value: any) => void;
+  currentPost?: Post;
+  index?: number;
 }
 export interface PostSchema {
   mediaFile?: File | null;
@@ -26,7 +44,12 @@ export default function ResourceCreation({
   resourceType,
   closeDialog,
   postObject,
-  setPostObject
+  setPostObject,
+  isEditMode,
+  attachmentBlock,
+  feedModerationHandler,
+  currentPost,
+  index
 }: ResourceCreationProps) {
   const userContext = useContext(UserContext);
   const [ogTagHolder, setOgTagHolder] = useState<OgTag | null>(null);
@@ -42,20 +65,116 @@ export default function ResourceCreation({
         return <>Add Link Resource</>;
     }
   }
+  async function post() {
+    if (postObject?.description?.length! < 200 && resourceType === 0) {
+      feedModerationHandler!(SHOW_SNACKBAR, -1, LENGTH_BELOW_MINIMUM);
+      return;
+    }
+    switch (isEditMode) {
+      case null:
+      case undefined:
+      case false: {
+        if (resourceType === 3) {
+          addPost(
+            resourceType,
+            postObject,
+            userContext.user?.sdkClientInfo.uuid,
+            ogTagHolder!
+          ).then((resp) => {
+            feedModerationHandler!(NEW_POST, 0, resp);
+          });
+
+          closeDialog();
+          return null;
+        }
+        addPost(resourceType, postObject, userContext.user?.sdkClientInfo.uuid).then((resp) => {
+          feedModerationHandler!(NEW_POST, 0, resp);
+        });
+        closeDialog();
+        return;
+      }
+      default: {
+        console.log('Reached here');
+        let { title, description, linkResource, mediaFile } = postObject;
+        let response: any;
+        switch (resourceType) {
+          // case for editing article post
+          case 0: {
+            response = await lmFeedClient.editArticlePost(
+              currentPost?.Id!,
+              mediaFile!,
+              userContext.user?.sdkClientInfo.uuid,
+              postObject,
+              attachmentBlock as any
+            );
+            break;
+          }
+          case 1:
+          case 2: {
+            response = await lmFeedClient.editVideoOrDocumentPost(
+              currentPost?.Id!,
+              description!,
+              title,
+              currentPost?.attachments as any
+            );
+            break;
+          }
+          case 3: {
+            response = await lmFeedClient.editPostWithOGTags(
+              currentPost?.Id!,
+              title!,
+              description!,
+              linkResource!
+            );
+          }
+        }
+        console.log(response);
+        feedModerationHandler!(POST_EDITED_SUCCESSFULLY, index!, {
+          post: response?.data?.post,
+          widget: response?.data?.widgets
+        });
+        closeDialog();
+        return;
+      }
+    }
+  }
   function setResourceCreationBlock() {
     switch (resourceType) {
       case 0:
-        return <ArticleResourceCreator postDetails={postObject} setPostDetails={setPostObject} />;
+        return (
+          <ArticleResourceCreator
+            postDetails={postObject}
+            setPostDetails={setPostObject}
+            isEditMode={isEditMode!}
+            attachmentBlock={attachmentBlock}
+          />
+        );
       case 1:
-        return <VideoResourceCreator postDetails={postObject} setPostDetails={setPostObject} />;
+        return (
+          <VideoResourceCreator
+            postDetails={postObject}
+            setPostDetails={setPostObject}
+            isEditMode={isEditMode!}
+            attachmentBlock={attachmentBlock}
+          />
+        );
       case 2:
-        return <PDFResourceCreator postDetails={postObject} setPostDetails={setPostObject} />;
+        return (
+          <PDFResourceCreator
+            postDetails={postObject}
+            setPostDetails={setPostObject}
+            isEditMode={isEditMode!}
+            attachmentBlock={attachmentBlock}
+          />
+        );
       case 3:
         return (
           <LinkResourceCreator
             setOgTagHolder={setOgTagHolder}
             postDetails={postObject}
             setPostDetails={setPostObject}
+            isEditMode={isEditMode!}
+            attachmentBlock={attachmentBlock}
           />
         );
     }
@@ -87,21 +206,7 @@ export default function ResourceCreation({
         </div>
         {setResourceCreationBlock()}
         <div className="postFeed">
-          <button
-            onClick={() => {
-              if (resourceType === 3) {
-                addPost(
-                  resourceType,
-                  postObject,
-                  userContext.user?.sdkClientInfo.uuid,
-                  ogTagHolder!
-                );
-                return null;
-              }
-              addPost(resourceType, postObject, userContext.user?.sdkClientInfo.uuid);
-            }}>
-            Post
-          </button>
+          <button onClick={post}>Post</button>
         </div>
       </div>
     </div>
